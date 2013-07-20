@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block body %}
+<script type="text/javascript">
+function set_openid(openid, pr)
+{
+    u = openid.search('<username>')
+    if (u != -1) {
+        // openid requires username
+        user = prompt('Enter your ' + pr + ' username:')
+        openid = openid.substr(0, u) + user
+    }
+    form = document.forms['login'];
+    form.elements['openid'].value = openid
+}
+</script>
+
+<h2>Log in</h2>
+<div>
+  {% if error %}
+  <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4>Error!</h4>
+      {{ error }}
+  </div>
+  {% endif %}
+
+ <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab1" data-toggle="tab">Password</a></li>
+    <li><a href="#tab2" data-toggle="tab">OpenID</a></li>
+</ul>
+
+  <div class="tab-content">
+    <div class="tab-pane active" id="tab1">
+<form class="form-horizontal" action="{{ url_for('login') }}" name="login1" method="post">
+  {{form.hidden_tag()}}
+  <div class="control-group">
+    <label class="control-label" for="{{form.username.id}}">Username</label>
+    <div class="controls">
+			{{form.username(placeholder="Username")}}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="{{form.password.id}}">Password</label>
+    <div class="controls">
+			{{form.password(placeholder="Password")}}<br /><a href="{{ url_for('password_reset') }}">Forgot password?</a>
+
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      <label class="checkbox">
+        {{form.remember_me}} Remember Me
+      </label>
+      <button type="submit" class="btn">Log In</button>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <div class="controls">
+<p>Don't have an account? Sign in with your <a id="openidlink" href="#tab2" data-toggle="tab">OpenID</a> or <a href="{{ url_for('signup') }}">Sign up</a>!</p>
+    </div>
+  </div>    
+</form>
+    </div>
+		
+		
+		
+		
+    <div class="tab-pane" id="tab2">
+
+<form class="form-horizontal" action="{{ url_for('login') }}" name="login" method="post">
+  {{formoid.hidden_tag()}}
+  <div class="control-group">
+    <label class="control-label" for="{{formoid.openid.id}}">OpenID</label>
+    <div class="controls">
+        {{formoid.openid(class="input-xlarge", placeholder="OpenID Identifier")}}
+    </div>
+  </div>
+
+<p>Please enter your OpenID, or select one of the providers below:</p>
+<p>
+{% for pr in providers %}
+<a href="javascript:set_openid('{{pr.url}}', '{{pr.name}}');">{{pr.name}}</a>{% if not loop.last %} | {% endif %}
+{% endfor %}
+</p>
+
+  <div class="control-group">
+    <div class="controls">
+      <label class="checkbox">
+        {{formoid.remember_me}} Remember Me
+      </label>
+      <button type="submit" class="btn">Log In</button>
+    </div>
+  </div>
+      </form>
+    </div>
+  </div>
+  
+<p>If you have any trouble logging in to your account, contact us at <a href="{{ help_email }}">{{ help_email }}</a>.</p>
+</div>
+{% endblock %}

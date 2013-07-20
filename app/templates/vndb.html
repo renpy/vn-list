@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>{{game.game_title}}</h1>
+
+<a href="{{ url_for('game_details',game_slug=game.slug) }}">Back</a>
+
+<p>{% if not exists %}This game dosn't have an entry on VNDB.org. {% endif %}</p>
+<p><a href="#">Submit to VNDB.org</a></p>
+
+{% endblock %}

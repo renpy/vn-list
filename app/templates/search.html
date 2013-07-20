@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+{% include 'game_list_options.html' %}
+<div class="page-header">
+  <h1><small>Search for: </small>{{ request.args.get('q', None) }}</h1>
+		<form class="form-search" action="{{ url_for('search_game') }}">
+			<div class="input-append">
+				<input class="search-query input-xlarge" style="font-size: 24px; height: auto; margin-bottom: 15px; padding: 7px 9px;" name="q" type="text" {% if search %}value="{{ request.args.get('q', None) }}"{% endif %} placeholder="Search">
+				<button type="submit" class="btn btn-large">Search</button>
+			</div>
+		</form>
+</div>
+<div class="clearfix"></div>
+{% include 'game_list_normal.html' %}
+
+
+
+{% endblock %}

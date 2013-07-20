@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>Statistics</h2>
+<p>Since there's no such thing as too much information.</p>
+<h3>{{ site_data.title }}-Specific:</h3>
+{% if site_data.domain_id==site_data.renpy_list_id %}
+<img src="http://chart.apis.google.com/chart?cht=bvg&chs=400x300&chd=e:AkAAAAGPLVandck0eB0G..UZ&chtt=Games%20per%20Year&chxt=y,x&chxr=0,0,113|1,2002,2013">
+{% else %}
+<img src="http://chart.apis.google.com/chart?cht=bvg&chs=400x300&chd=e:CeA1E7PmTseXSDQaeX2-..Xz&chtt=Games%20per%20Year&chxt=y,x&chxr=0,0,78|1,1012,2013">
+{% endif %}
+
+<h3>Global</h3>
+<ul>
+<li>Total games: {{ stats.total}}</li>
+<li><a href="{{ site_data.domain_urls[site_data.domain_id] }}">{{ site_data.title }}</a> games: {{ stats.here}} ({{ stats.here_unique }} unique)</li>
+<li><a href="{{ site_data.domain_urls[other_id] }}">{{ site_data.titles[other_id] }}</a> games: {{ stats.there }} ({{ stats.there_unique }} unique)</li>
+<ul>
+<p>(This includes unapproved games.)</p>
+{% endblock %}

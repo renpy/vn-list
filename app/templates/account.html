@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block body %}
+
+  {% if error %}
+  <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4>Error!</h4>
+      {{ error }}
+  </div>
+  {% endif %}
+<h2>Account settings</h2>
+
+ <ul class="nav nav-tabs">
+    <li {% if sel_tab==1 %}class="active"{% endif %}><a href="#tab1" data-toggle="tab">Basic Settings</a></li>
+    <li {% if sel_tab==2 %}class="active"{% endif %}><a href="#tab2" data-toggle="tab">Change Password</a></li>
+</ul>
+
+  <div class="tab-content">
+    <div class="tab-pane {% if sel_tab==1 %}active{% endif %}" id="tab1">
+			<form class="form-horizontal" method="post" enctype="multipart/form-data" name="account_settings">
+				{{form.hidden_tag()}}
+				<div class="control-group">
+					<label class="control-label" for="{{ form.username.id }}">{{ form.username.label }}</label>
+					<div class="controls">
+						{{ form.username }}
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="{{ form.email.id }}">{{ form.email.label }}</label>
+					<div class="controls">
+						{{ form.email }}
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						{{ form.submit_basic(class="btn") }}
+					</div>
+				</div>	
+			</form>
+		</div>
+
+    <div class="tab-pane {% if sel_tab==2 %}active{% endif %}" id="tab2">
+			<form class="form-horizontal" method="post" enctype="multipart/form-data" name="account_settings_pass">
+				{{formpass.hidden_tag()}}
+				<div class="control-group">
+					<label class="control-label" for="{{ formpass.password.id }}">{{ formpass.password.label }}</label>
+					<div class="controls">
+						{{ formpass.password }}
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="{{ formpass.newpassword.id }}">{{ formpass.newpassword.label }}</label>
+					<div class="controls">
+						{{ formpass.newpassword }}
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						{{ formpass.submit_pass(class="btn") }}
+					</div>
+				</div>	
+			</form>
+		</div>
+		
+	</div>
+				
+{% endblock %}

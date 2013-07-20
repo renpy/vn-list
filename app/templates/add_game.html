@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+{% block body %}
+
+  <h2>{% if edit %}Edit game data{% else %}Add a new game{% endif %}</h2>
+  {% if error %}
+  <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4>Error!</h4>
+      {{ error }}
+  </div>
+  {% endif %}
+
+{% if not edit %}
+<div class="well">
+	<button class="close pull-right" type="button" data-toggle="collapse" data-target="#notice">&times;</button>
+	  <p>This form lets you add a game to <a href="http://www.renai.us/" target="_blank">renai.us</a> and/or <a href="http://games.renpy.org/" target="_blank">games.renpy.org</a>.</p>
+	<div class="collapse" id ="notice">
+  {#<button type="button" class="close" data-dismiss="alert">&times;</button>#}
+<p>The two sites share the same database, you'll only have to add your game once to have it show up on both sites.</p>	
+
+  <p><strong class="text-error">Only complete games should be added.</strong> We do not accept works-in-progress. There must be something substantial available for download before a game is added. While we might accept an "Episode" or "Act" of a game, this isn't the place to write about a game with nothing available. You may want to try the <a href="http://lemmasoft.renai.us/forums/viewforum.php?f=16" target="_blank">Lemma Soft Forums works-in-progress section</a>.</p>
+  <p>
+  Your game will show up on renai.us if:
+  <ul>
+    <li>It's free for us to redistribute.</li>
+    <li>It does not use any materials that are copyrighted by someone else.</li>
+      <ul><li>Exception: A fanfic can use characters that are copyrighted.</li></ul>
+    <li>It's written in English.</li>
+    <li>You check the "renaius" box below, indicating that you're complying with these terms.</li>
+  </ul>
+  Your game will show up on renpy.org if:
+  <ul>
+    <li>It was made with the <a href="http://www.renpy.org/" target="_blank">Ren'Py visual novel engine</a>.</li>
+  </ul>
+  </p>
+  <p>Games must be approved by a moderator before they show up on the site. This might take a couple of days, depending on how busy we are.</p>
+	</div>
+</div>
+{% endif %}
+
+<form method="post" class="form-horizontal">
+	{{ form.hidden_tag() }}
+  <div class="control-group {% if form.game_title.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.game_title.id }}">{{ form.game_title.label }}</label>
+    <div class="controls">			
+			<input class="input-xlarge" id="focusedInput" name="{{ form.game_title.name }}" type="text" value="{{ form.game_title.data }}" autofocus>
+			{% if form.game_title.errors %}<span class="help-inline">{% for error in form.game_title.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>{% endif %}
+			<span class="help-block">{{ form.game_title.description }}</span>
+    </div>
+  </div>	
+	
+{% if not edit %}
+  <div class="control-group {% if form.slug.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.slug.id }}">{{ form.slug.label }}</label>
+    <div class="controls">			
+			{{ form.slug(placeholder="the-game-title") }}
+				{% if form.slug.errors %}
+					<span class="help-inline">{% for error in form.slug.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+			<span class="help-block">{{ form.slug.description }}</span>			
+    </div>
+  </div>
+{% endif %}
+
+  <div class="control-group {% if form.homepage_link_url.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.homepage_link_url.id }}">{{ form.homepage_link_url.label }}</label>
+    <div class="controls">			
+			{{ form.homepage_link_url }}
+				{% if form.homepage_link_url.errors %}
+					<span class="help-inline">{% for error in form.homepage_link_url.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+			<span class="help-block">{{ form.homepage_link_url.description }}</span>			
+    </div>
+  </div>
+	
+  <div class="control-group {% if form.creator.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.creator.id }}">{{ form.creator.label }}</label>
+    <div class="controls">			
+			<input id="{{ form.creator.id }}" name="{{ form.creator.name }}" type="text" value="{{ form.creator.data }}" autocomplete="off" data-provide="typeahead" data-items="10" data-source='{{ developers|safe }}' >
+			{% for subfield in form.creator_type %}
+      <label class="radio inline">
+        {{ subfield }} {{ subfield.label }}
+			</label>
+			{% endfor %}
+				{% if form.creator.errors %}
+					<span class="help-inline">{% for error in form.creator.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+			<span class="help-block">{{ form.creator.description }}</span>			
+    </div>
+  </div>
+	
+
+  <div class="control-group {% if form.description_.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.description_.id }}">{{ form.description_.label }}</label>
+    <div class="controls">			
+			{{ form.description_(class="input-xxlarge", rows="12") }}
+				{% if form.description_.errors %}
+					<span class="help-inline">{% for error in form.description_.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+			<span class="help-block">{{ form.description_.description }}</span>			
+    </div>
+  </div>
+
+  <div class="control-group {% if form.age_rating_id.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.age_rating_id.id }}">{{ form.age_rating_id.label }}</label>
+    <div class="controls">
+			{% for subfield in form.age_rating_id %}
+      <label class="radio inline">
+        {{ subfield }} {{ subfield.label }}
+			</label>
+			{% endfor %}
+				{% if form.age_rating_id.errors %}
+					<span class="help-inline">{% for error in form.age_rating_id.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+    </div>
+		<span class="help-block">{{ form.age_rating_id.description|safe }}</span>				
+  </div>
+
+
+  <div class="control-group {% if form.categories.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.categories.id }}">{{ form.categories.label }}</label>
+    <div class="controls">
+			{% for subfield in form.categories %}
+      <label class="checkbox inline" style="width: 140px;">
+        {{ subfield }} {{ subfield.label }}
+			</label>
+			{% endfor %}
+				{% if form.categories.errors %}
+					<span class="help-inline">{% for error in form.categories.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+				<span class="help-block">{{ form.categories.description|safe }}</span>
+    </div>
+  </div>
+
+	
+  <div class="control-group {% if form.words.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.words.id }}">{{ form.words.label }}</label>
+    <div class="controls">			
+			{{ form.words(class="input-small") }}
+				{% if form.words.errors %}
+					<span class="help-inline">{% for error in form.words.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+			<span class="help-block">{{ form.words.description }}</span>			
+    </div>
+  </div>
+
+  <div class="control-group {% if form.playtime.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.playtime.id }}">{{ form.playtime.label }}</label>
+    <div class="controls">			
+			{{ form.playtime(class="input-small") }}
+			{% for subfield in form.playtime_unit %}
+      <label class="radio inline">
+      
+      
+        {{ subfield(onclick="changeHoursMins()") }} {{ subfield.label }}
+			</label>
+			{% endfor %}
+
+				{% if form.playtime.errors %}
+					<span class="help-inline">{% for error in form.playtime.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+			<span class="help-block">{{ form.playtime.description }}</span>			
+    </div>
+  </div>
+	
+	
+{% if not edit %}
+{% include 'release_form.html' %}
+{{ form.release_description }}
+
+
+	<div class="control-group {% if form.playtime.errors %}error{% endif %}">
+		<label class="control-label" for="{{ form.listed_on.id }}">{{ form.listed_on.label }}</label>
+		<div class="controls">
+			<label class="checkbox">{{ form.listed_on }} Yes</label>
+				{% if form.listed_on.errors %}
+					<span class="help-inline">{% for error in form.listed_on.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+			<span class="help-block">{{ form.listed_on.description }}</span>			
+		</div>
+  </div>
+{% endif %}
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">{% if not edit %}Submit Game{% else %}Submit Changes{% endif %}</button>
+  </div>
+</form>
+
+
+{% endblock %}

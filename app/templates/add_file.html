@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block body %}
+
+{% if error %}<p><strong>Error:</strong> {{ error }}{% endif %}
+<h2>Upload files for this release</h2>
+<form class="form-horizontal" method="post" enctype="multipart/form-data" name="file_upload">
+  {{form.hidden_tag()}}
+
+  <div class="control-group">
+    <div class="controls">
+      {{ form.uploaded_file }}
+    </div>
+  </div>
+  <div class="control-group">
+	  <label class="control-label" for="{{ form.description.id }}">{{ form.description.label }}</label>
+    <div class="controls">
+      {{ form.description }}
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn">Submit</button>
+    </div>
+  </div>	
+</form>
+				
+{% endblock %}

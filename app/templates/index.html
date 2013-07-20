@@ -1,0 +1,54 @@
+﻿{% extends "layout.html" %}
+{% block body %}
+
+            <h1>{{ site_data.title }}</h1>
+            <p class="lead">
+						{% if site_data.domain_id==site_data.renai_archive_id %}<strong>Ren'Ai Archive</strong> is a collection of original English-language visual novels and <abbr rel="tooltip" title="romantic">ren'ai</abbr> games. We aim to provide an archive of all complete games of this type, that we can distribute for free. This site allows anyone to add games they've created or discovered.
+						{% endif %}
+						
+						{% if site_data.domain_id==site_data.renpy_list_id %}At <strong>Ren'Py games list</strong> we attempt to catalog every game made with the <a href="http://www.renpy.org/wiki/renpy/Home_Page">Ren'Py visual novel engine</a>. This site allows anyone to add games they've created or discovered.
+						{% endif %}
+						</p>
+						
+<h2>Recently added</h2>
+<ul>
+{% for recent in recent_games %}
+<li>{{ recent.release.release_date }}: <a href="{{ url_for('game_details', game_slug=recent.slug) }}" rel="popover" data-html="true" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{% if recent.screenshot.filename %}<img class='img-polaroid' src='{{ url_for('image_small', filename=recent.screenshot.filename) }}' width='240' alt='{{ recent.game_title }} thumbnail'/> {% endif %}{{ recent.description }}" title="{{ recent.game_title }}">{{ recent.game_title }}</a></li>
+{% endfor %}
+</ul>
+
+<p>You can use the navigation bar at the left to search for a game and to find all games of a given type. Or, if you are feeling lucky, check these randomly selected games below.</p>
+
+<h2>Random games</h2>
+{% if screenshots %}
+<div id="myCarousel" class="carousel slide" style="width: 680px; height:540px;margin-left:auto; margin-right:auto;">
+  <ol class="carousel-indicators">
+		{% for screenshot in screenshots %}
+    <li data-target="#myCarousel" data-slide-to="{{ loop.index }}" {% if loop.first %}class="active"{% endif %}></li>
+		{% endfor %}
+  </ol>
+  <!-- Carousel items -->
+  <div class="carousel-inner">
+  {% for screenshot in screenshots %}
+      <div class="item {% if loop.first %}active{% endif %}">
+				<img src="{{ url_for('image_normal', filename=screenshot.filename) }}" Xwidth="680" height="540" style="height:540px;" alt="{{ screenshot.caption}} " />
+				<div class="carousel-caption">
+					<h4><a href="{{ url_for('game_details', game_slug=screenshot.slug) }}">{{ screenshot.game_title }}</a></h4>
+					<p>... <a href="{{ url_for('game_details', game_slug=screenshot.slug) }}">Click for more info.</a> </p>
+				</div>
+
+      </div>
+  {% endfor %}
+
+  </div>
+  <!-- Carousel nav -->
+  <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+  <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+</div>
+
+{% endif %}
+
+<h2>Add a Game!</h2>
+<p>If you have a game that's appropriate for this website, you can <a class="btn btn-info" href="{{ url_for('add_game') }}">Add a New Game</a> by filling out a simple form. We'll check it out within a few days, and add your contribution to the site. If you need help, please post in <a href="http://lemmasoft.renai.us/forums/viewtopic.php?f=4&t=6487">this forum thread</a>.</p>
+
+{% endblock %}

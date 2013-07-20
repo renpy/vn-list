@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+		<title>{{ site_data.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+ 
+    <!-- Le styles -->
+    <link href="/static/bootstrap.css" rel="stylesheet">
+    <link href="/static/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/static/style_more.css" rel="stylesheet">
+    <link href="/static/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" media="screen" />
+		<link rel="stylesheet" href="/static/fancybox/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="/static/fancybox/helpers/jquery.fancybox-thumbs.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen">
+    <!-- Fav and touch icons -->
+{#    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png"> #}
+    
+{% if site_data.domain_id==site_data.renpy_list_id %}
+    <link rel="shortcut icon" href="/static/favrenpy.ico">
+{% else %}
+    <link rel="shortcut icon" href="/static/favrenai.ico">
+{% endif %}
+
+    <style type="text/css">    
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      body p {
+        font-size: 16px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .popover {
+        max-width: 300px;
+        {# width: auto; #}
+        max-height: 350px;
+        overflow: hidden;
+      }
+      
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+
+{# TO DO: need html5shiv.js #}
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="/static/html5shiv.js"></script>
+    <![endif]-->
+
+		<!-- <link rel="shortcut icon" href="/static/favicon.png') }}"> -->
+
+  </head>
+
+  <body>
+	
+  
+{% include 'navigation_top.html' %}
+    <div class="container-fluid">
+      <div class="row-fluid">
+        
+		{% include 'navigation_side.html' %}
+        
+				
+        <div class="span9">
+		{% for message in get_flashed_messages() %}
+          <div class="alert alert-info fade in">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+        {% block body %}{% endblock %}
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer style="text-align: center;">
+  	    <p>The games on this site are copyrighted by their owner, unless otherwise specified.</p>
+        <p>Please do not redistribute them without permission.</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+		<script src="/static/jquery-1.9.1.min.js"></script>
+		<script src="/static/bootstrap.js"></script>
+		<script type="text/javascript" src="/static/fancybox/jquery.fancybox.pack.js"></script>
+		<script type="text/javascript" src="/static/fancybox/helpers/jquery.fancybox-buttons.js"></script>
+		<script type="text/javascript" src="/static/fancybox/helpers/jquery.fancybox-media.js"></script>
+{#		<script type="text/javascript" src="/static/fancybox/helpers/jquery.fancybox-thumbs.js"></script> #}
+	
+    <script src="/static/jquery-ui-1.10.3.custom.min.js"></script>
+    
+    
+		<script type="text/javascript">
+			$('.carousel').carousel({
+						interval: 7000
+			})
+		</script>
+		<script type="text/javascript">
+			$('.collapse').collapse().on('hidden', function() {
+				if (this.id) {
+						localStorage[this.id] = 'true';
+				}
+			}).on('shown', function() {
+					if (this.id) {
+							localStorage.removeItem(this.id);
+					}
+			}).each(function() {
+					if (this.id && localStorage[this.id] === 'true' ) {
+							$(this).collapse('hide');
+					}
+			});
+		</script>
+
+		<script>
+$(document).ready(function() {
+	$(".fancybox").fancybox({
+		openEffect  : 'none',
+		closeEffect : 'none',
+		prevEffect	: 'none',
+		nextEffect	: 'none',
+		closeBtn		: false,
+		arrows			: false,
+		aspectRatio : true,
+		helpers		: {
+			media : {},
+			title	: { type : 'inside' },
+			buttons	: {},
+			thumbs	: {
+				width	: 120
+			}
+		}
+	});
+});
+
+		</script>
+	
+<script type="text/javascript">
+//<![CDATA[
+  (function() {
+    var shr = document.createElement('script');
+    shr.src = '//dtym7iokkjlif.cloudfront.net/assets/pub/shareaholic.js';
+    shr.type = 'text/javascript'; shr.async = 'true';
+    shr.onload = shr.onreadystatechange = function() {
+      var rs = this.readyState;
+      if (rs && rs != 'complete' && rs != 'loaded') return;
+      var apikey = 'cb5a14f6309365e1c211f9840fa0c2dc'
+      try { Shareaholic.init(apikey); } catch (e) {}
+    };
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(shr, s);
+  })();
+//]]>
+</script>
+
+
+  <script>
+  $(function() {
+    $( "#datepicker" ).datepicker();
+  });
+  </script>
+        <script type="text/javascript">
+            $(function () {
+                $("[rel='tooltip']").tooltip();
+            });
+            $(function () {
+                $("[rel='popover']").popover();
+            });            
+        </script>
+        
+        <script>
+          function changeHoursMins() {
+            if (document.getElementById("playtime").value=="") {
+              document.getElementById("playtime").value="0"
+            }
+            if (document.getElementById("playtime_unit-0").checked) {
+              document.getElementById("playtime").value=(parseFloat(document.getElementById("playtime").value)*60).toFixed(0).toString();
+            } else {
+              document.getElementById("playtime").value=(parseFloat(document.getElementById("playtime").value)/60).toFixed(2).toString();
+            }
+          }
+        </script>
+        
+  </body>
+</html>

@@ -1,0 +1,41 @@
+`{% extends "layout.html" %}
+{% block body %}
+
+
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+<h2>Sign Up</h2>
+
+<p>Already have an account? <a href="{{ url_for('login') }}">Log In</a>!</p>
+<p>You can also <a href="{{ url_for('login') }}">log in</a> without signing up by using your OpenID. A number of major service providers on the internet support OpenID authentication for their members. For example, if you have an account with Google or Yahoo, you already have an OpenID with them.</p>
+
+  <form class="form-horizontal" action="{{ url_for('signup') }}" method="post" name="signup">
+  {{form.hidden_tag()}}
+  <div class="control-group">
+    <label class="control-label" for="{{form.username.id}}">Username</label>
+    <div class="controls">
+      {{form.username(placeholder="Username")}}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="{{form.password.id}}">Password</label>
+    <div class="controls">
+ 		  {{form.password(placeholder="Password")}}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="{{form.email.id}}">Email (optional)</label>
+    <div class="controls">
+  		{{form.email(placeholder="Email")}}
+    </div>
+  </div>
+
+  <div class="control-group">
+    <div class="controls">
+	  {# <p>By clicking "Sign Up", you are indicating that you have read and agree to the Terms of Use and Privacy Policy.</p> #}
+      <button type="submit" class="btn">Sign Up</button>
+    </div>
+  </div>
+</form>
+<p>If you have any trouble logging in to your account, contact us at <a href="{{ help_email }}">{{ help_email }}</a>.</p>
+  
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="inner_page">
+  <h2>Screenshots for {{ game.game_title }}</h2>
+  {% if error %}
+  <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4>Error!</h4>
+      {{ error }}
+  </div>
+  {% endif %}
+
+  <div class="imageRow">
+  	<div class="set">
+{% for screenshot in game.screenshots %}	  
+      <div class="single {% if loop.first %}first{% endif %}{% if loop.last %}last{% endif %}">
+<a href="{{ url_for('image_normal', filename=screenshot.filename) }}" title=" {{ screenshot.caption }}"><img src="{{ url_for('image_small', filename=screenshot.filename) }}" width="240" Xheight="315" alt="{{ screenshot.caption}} " /></a>
+      </div>
+{% endfor %}	  
+    </div>	
+  </div>
+  
+<form method="post" class="form" enctype="multipart/form-data">
+  <fieldset>
+    <legend>Add a screenshot to {{ game.game_title }}</legend>
+    <label>Choose a file</label>
+    <input type="file" name="file">
+    <span class="help-block">Select an image file to upload from your hard drive (.jpg or .png).</span>
+    <label>Caption</label>
+    <input type="text" name="caption">
+    <span class="help-block">Caption for this image (optional).</span>
+    <label class="checkbox">
+  	  <input type="checkbox" name="is_thumb" id="is_thumb_y" value="1" {% if is_thumb %}checked{% endif %} > Use this image as a thumbnail.
+    </label>
+    <button type="submit" class="btn btn-primary">Upload Image</button>
+  </fieldset>
+</form>
+
+</form>
+</div>
+
+{% endblock %}

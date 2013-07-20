@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+{% for game in games %}
+
+<p>
+{{ loop.index }}. <a href="{{ url_for('game_details',game_slug=game.slug) }}" >{{ game.game_title}}</a></p>
+
+{# <div class="clearfix"></div> #}
+
+{% else %}
+    <em>Unbelievable.  No entries here so far
+{% endfor %}
+  
+{% endblock %}

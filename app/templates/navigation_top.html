@@ -1,0 +1,58 @@
+    <div class="navbar  navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+				
+          <a class="brand" href="{{ url_for('index') }}">{{ site_data.title }}</a>
+					
+          <div class="nav-collapse">
+
+					<form class="navbar-form pull-left form-search" action="{{ url_for('search_game') }}">
+						<div class="input-append">
+							<input class="search-query" style="width: 100px;" name="q" type="text" {% if search %}value='{{ search }}'{% endif %} placeholder="Search">
+							<button type="submit" class="btn"><i class="icon-search"></i></button>
+						</div>
+					</form>
+			  
+            <ul class="nav">
+              {% for group in navigation %}
+			    <li class="dropdown">
+				  {% if not group.side_only %}
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ group.name }}<b class="caret"></b></a>
+				  <ul class="dropdown-menu">
+			        {% for item in group.categories %}
+                <li {% if item.slug==current_slug %}class="active"{% endif %}><a href="{% if group.name=='Other' %}{{ url_for('show_entries_special', special=item.slug) }}{% else %}{{ url_for('show_entries', filter=item.slug) }}{% endif %}">{{ item.name }}</a></li>
+              {% endfor %}
+				  </ul>
+				  {% endif %}
+				</li>
+              {% endfor %}
+			  
+            </ul>
+
+			
+            <ul class="nav pull-right">
+				
+
+				{% if not g.user.is_authenticated() %}
+				  <li><a class="navbar-link" href="{{ url_for('signup') }}">Sign up</a></li>
+				  <li><a class="navbar-link" href="{{ url_for('login') }}">Log In</a></li>
+				{% else %}
+				<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> {{ g.user.username }}<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+				  <li><a class="navbar-link" href="{{ url_for('account_settings') }}">Account</a></li>
+		      <li><a class="navbar-link" href="{{ url_for('change_domain_testing', domain_id=1) }}">Switch to Renai.us  (test)</a></li>
+					<li><a class="navbar-link" href="{{ url_for('change_domain_testing', domain_id=2) }}">Switch to games.renpai.org (test)</a></li>
+					<li><a class="navbar-link" href="{{ url_for('change_domain_testing', domain_id=0) }}">Clear domain (test)</a></li>
+
+					<li><a class="navbar-link" href="{{ url_for('logout') }}">Log out</a></li>
+		    </ul>
+		    </li>
+				{% endif %}
+		    </ul>
+			  
+
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>

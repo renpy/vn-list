@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if games %} 
+  {% for work in games %}
+  
+<div class="media">
+  <a class="pull-left" href="{{ url_for('index') }}game/{{ work.slug }}.shtml#screenshots">
+    {% if work.screenshot_small %}<img class="media-object" src="{{ url_for('index') }}{{ work.screenshot_small }}" width="80" alt="screenshot"/>{% endif %}
+  </a>
+  <div class="media-body">
+  
+    <div class="pull-right">
+      <button type="button" class="btn" data-toggle="collapse" data-target="#more{{ work.id }}">More...</button>
+      <a href="{{ url_for('game_details',game_slug=work.slug) }}" class="btn btn-info">Info and DLs</a>
+    </div>
+
+    <p><strong style="font-size:16px;">{{ work.game_title }}</strong> by <a href="#">{{ work.maker }}</a>
+{% for cat in work.categories %}
+<a class="badge badge-info" href="{{ cat.category_slug }}">{{ cat.category_slug }}</a>{% if not loop.last %}{% endif %}
+{% endfor %}
+	{{ work.date }}
+<span {% if work.age_rating == 'Ages 18+' %}class="label label-important"{% endif %}>{{ work.age_rating}}</span>
+
+{% if work.words or work.playtime %} &bull; {% endif %}
+{% if work.words %}{{ work.words }} words{% if work.playtime %} / {% else %} &bull; {% endif %}{% endif %}
+{% if work.playtime %}{{ work.playtime }} &bull; {% endif %}
+	 </p>
+
+
+<div id="more{{ work.id }}" class="collapse out">
+<p>{{ work.work_description }}</p>
+
+{% for release in work.releases %}
+<p>
+Release {{ release.release_version }}<br/>
+{{ release.release_description }}<br/>
+Release Date: {{ release.release_date }}<br />
+Platforms: {{ release.platforms }}<br />
+Engine: {{ release.engine_name }} {{ release.engine_version }}</p>
+{% endfor %}
+
+  <div class="imageRow">
+  	<div class="set">
+{% for screenshot in work.screenshots %}	  
+      <div class="single {% if loop.first %}first{% endif %}{% if loop.last %}last{% endif %}">
+<a href="{{ url_for('index') }}uploads/{{ screenshot.filename }}" rel="Lightbox[group1]" title="{% if  screenshot.caption %}{{ screenshot.caption }}{% endif %}"><img src="{{ url_for('index') }}uploads/{{ screenshot.filename }}" width="160"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ work.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
+      </div>
+{% endfor %}	  
+    </div>
+  </div>
+-
+</div>
+
+  </div>
+<div class="clearfix"></div>
+{% endfor %}
+</div>
+  {% else %}
+    <em>Unbelievable.  No entries here so far
+  {% endif %}
+
+  
+  
+
+{% endblock %}
+
+
+{#  
+  <table class="table">
+
+<thead>
+<tr>
+<th scope="col"><p><a href="?order=title">Title</a></p></th>
+<th scope="col"><p>Info (<a href="?order=date">Date</a>, <a href="?order=words">Words</a> &hellip;)</p></th>
+<th scope="col"><p>Description</p></th>
+<th scope="col"><p>Categories</p></th>
+<th scope="col"><p>DLs & Links</p></th>
+<th scope="col"><p>Screenshot</p></th>
+</tr>
+</thead>
+  {% for work in works %}
+    <tr>
+<td><div style="width: 140px; text-align: center;"><span style="font-size: 16px;">{{ work.game_title }}</span>
+
+by <a href="#">{{ work.maker }}</a><br/>
+
+<a href="{{ url_for('index') }}game/{{ work.slug }}.shtml" style="font-size: 24px;">Details</a></div></td>
+
+<div style="width: 180px;">{{ work.work_description }}
+
+
+<td><div style="width: 140px;">
+Created: {{ work.date }}<br/>
+{% if work.words>0 %}
+Words: {{ work.words }}<br/>
+{% endif %}
+{% if not(work.playtime==None) %}
+Playtime: {{ work.playtime}}<br/>
+{% endif %}
+{{ work.age_rating}}<br/>
+{{ work.platforms }}<br/>
+Engine: {{ work.engine }} {% if work.engine_version %}{{ work.engine_version }}{% endif %}<br/>
+
+{% if work.updated %}
+Updated:<br />{{ work.updated }} {{ work.version }}<br />
+<a href="{{ url_for('index') }}game/{{ work.slug }}.shtml#releases">See all releases ()</a>
+{% endif %}
+</div></td>
+
+<td><div style="width: 180px;">{{ work.work_description }}</div></td>
+
+<td><div>
+{% for cat in work.categories %}
+<a href="{{ cat.category_slug }}">{{ cat.category_name }}</a>{% if not loop.last %}<br />{% endif %}
+{% endfor %}</td>
+
+<td><div style="width: 120px;">
+{% if not (work.homepage_link_url==None) %}
+<a href="{{ work.homepage_link_url }}">{{ work.homepage_link_name }}</a>
+{% endif %}
+<br /><br />
+<a href="#">Windows download</a><br />
+<a href="#">Mac OS X download</a><br />
+<a href="#">Linux download</a><br />
+<a href="#">Patch download</a><br />
+</div></td>
+
+<td>
+{% if work.screenshot_small %}
+<div style="padding: 5% 0; width: 170px;"><a href="{{ url_for('index') }}game/{{ work.slug }}.shtml#screenshots"><img src="{{ url_for('index') }}{{ work.screenshot_small }}" width="160" style="width:160px; margin: 5% 0; margin-left: 3px; border: 2px solid #cecece" alt="screenshot"/></a></div>
+{% endif %}
+</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+    <em>Unbelievable.  No entries here so far
+  {% endif %}
+
+{% endblock %}
+#}

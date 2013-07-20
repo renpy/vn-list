@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="pull-right" style="margin-bottom: 10px;">
+  {% if game.user_id==g.user.id or  g.user.role==1 %}
+    <a class="btn" href="{{ url_for('edit_game',game_slug=game.slug) }}">Edit Game</a>
+  {% endif %}
+  <a class="btn" href="{{ url_for('add_release',game_slug=game.slug) }}">Add a Release</a>
+  <a class="btn" href="{{ url_for('add_screenshot',game_slug=game.slug) }}">Add Screenshot</a>
+</div>
+{% if game.age_rating.is_adult %}
+<div class="clearfix"></div>
+  <div class="alert alert-error">
+      This game may not be suitable for people under 18 years of age.
+  </div>
+{% endif %}
+{% if not game.approved %}
+<div class="clearfix"></div>
+  <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      This game is not yet approved.
+  </div>
+{% endif %}
+
+<h1>{{ game.game_title }}</h1>
+<div class="clearfix"></div>
+
+{% if game.screenshots %}
+<div class="pull-right" style="margin-left: 15px;">
+      <img class="img-polaroid" src="{{ url_for('image_small', filename=game.screenshot.filename) }}"  width="240" alt="{{ game.game_title }} thumbnail"/>
+</div>
+{% endif %}
+
+<h2 style="font-size: 140%;">
+{% if game.developer_id %}
+{{ game.developer.name }}
+{# <a href="{{ url_for('developer_info', developer=game.developer_id) }}">{{ game.maker }}</a>  #}
+{% else %}
+{{ game.maker }} 
+{% endif %}
+
+{# <i class="icon-star"></i> #}
+{% if game.link.url %}&bull; <a href="{{ game.link.url }}" rel="author">{{ game.link.name }}</a>{% endif %} 
+</h2>
+<p style="margin-left: 20px;">{{ game.description }}</p>
+
+<p>More info: <a href="{% if 1==1 %}http://vndb.org/v2{% else %}{{ url_for('get_vndb', slug=game.slug) }}{% endif %}">VNDB.org</a>{% if 1==1 %} &bull; <a href="#">Lemma Soft Forums</a>{% endif %}</p>
+
+<p style="font-size: 130%;">
+{{ game.releases[0].release_date.strftime('%b %d, %Y') }} &bull;
+{% if game.playtime %} 
+	{% if game.playtime>60 %} 
+  	{{ "%.2f"|format(game.playtime/60) }} hours
+	{% else %}
+		{{ game.playtime }} minutes
+	{% endif %}	
+&bull;{% endif %}
+{% if game.words %}{{ '{:,}'.format(game.words) }} words &bull;{% endif %}
+<span {% if game.age_rating.is_adult %}class="label label-important"{% endif %}>{% if not game.age_rating.id == 1 %}Ages {% endif %}{{ game.age_rating.name}}</span>
+</p>
+
+<p>
+{% for cat in game.categories %}
+<a class="badge badge-info" href="{{ url_for('show_entries', filter=cat.categories.slug) }}">{{ cat.categories.name }}</a>{% if not loop.last %} {% endif %}
+{% endfor %}
+</p>
+
+<div class="clearfix"></div>
+{% if g.user.role==1 %}
+{% if not game.approved %}<a class="btn btn-mini" href="{{ url_for('approve_game', id=game.id, slug=game.slug) }}">Approve</a>{% endif %}
+{% endif %}
+
+<div>
+<a id="releases"></a>
+{% for release in game.releases %}
+<h3>Release {{ release.release_version }}</h3>
+{% if not release.approved %}<p class="alert alert-error">This release is not yet approved.</p>{% endif %}
+<div style="margin-left: 20px;">
+    <p>{{ release.release_description }}</p>
+    <p>
+      <b>Release Date:</b> {{ release.release_date.strftime('%b %d, %Y') }}<br />
+      <b>Platforms:</b> {% for platform in release.platforms %}{{ platform.platform.platform_name }}{% if not loop.last %}, {% endif %}{% endfor %}<br />
+      <b>Engine:</b> {{ release.engine.name }} {{ release.engine_version }}
+
+    </p>
+    
+    <p>{% if game.user_id==g.user.id or  g.user.role==1 %}<a class="btn btn-small" href="{{ url_for('edit_release',game_slug=game.slug, release_id=release.id) }}">Edit this release</a>{% endif %} {% if not release.approved %}{% if g.user.role==1 %}<a class="btn btn-mini" href="{{ url_for('approve_release', id=release.id, slug=game.slug) }}">Approve</a>{% endif %}{% endif %}</p>
+
+    {% if release.files %}
+    <div class="well">
+        <p><strong>Downloads:</strong><p/>
+        {% for file in release.files %}
+        <p {% if not file.approved %}class="alert alert-error"{% endif %}>
+            <a href="{{ url_for('uploaded_file', filename=file.filename) }}"><i class="icon-download"></i> {{ file.filename }}</a> ({{ file.size }}) - {{ file.description }}{% if not file.approved %} - <strong>Unapproved</strong>{% endif %} {% if game.user_id==g.user.id or  g.user.role==1 %}<a class="btn btn-mini" href="{{ url_for('upload_file', game_slug=game.slug) }}?release={{ release.id }}&file={{ file.id }}">Edit file</a>{% endif %}{% if g.user.role==1 %}{% if not file.approved %}<a class="btn btn-mini" href="{{ url_for('approve_file', id=file.id, slug=game.slug) }}">Approve</a>{% endif %}{% endif %}
+        </p>
+        {% endfor %}
+    </div>        
+    {% endif %}
+    {% if game.user_id==g.user.id or  g.user.role==1 %}
+    <p><a class="btn btn-small" href="{{ url_for('upload_file', game_slug=game.slug) }}?release={{ release.id }}">Add a file</a></p>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+
+<div>
+<a id="screenshots"></a>
+{% if game.screenshots %}
+<h3>Screenshots</h3>
+
+  <div class="imageRow">
+  	<div class="set">
+{% for screenshot in game.screenshots %}	  
+      <div class="single {% if loop.first %}first{% endif %}{% if loop.last %}last{% endif %}">
+
+{% if loop.first and game.slug=='doppelganger' %}
+{# fancybox fancybox.iframe #}
+
+
+<a class="fancybox" rel="gallery" href="http://www.youtube.com/watch?v=TxXxDUaN5w0">
+<div style="position:relative">
+  <div>
+    <img src="http://img.youtube.com/vi/TxXxDUaN5w0/hqdefault.jpg" width="320">
+  </div>
+  <div style="position:absolute; left:98px; top:54px;">
+		<img src="/static/play.png">
+  </div>
+</div>
+</a>
+
+{% endif %}
+
+
+<a class="fancybox" rel="gallery" href="{{ url_for('image_normal', filename=screenshot.filename) }}"><img src="{{ url_for('image_medium', filename=screenshot.filename) }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
+
+      </div>
+{% endfor %}
+    </div>
+  </div>
+{% endif %}
+</div>
+
+
+
+<p class="alert alert-info">You can add new screenshots and new releases just by logging in. To update the game information, post a request <strong><a href="http://lemmasoft.renai.us/forums/viewtopic.php?f=4&t=6487">here.</a></strong></p>
+
+{#
+{% if g.user.role==1 %}
+<h3>Admin Options</h3>
+  <form xclass="form-horizontal" method="post">
+	{{form.hidden_tag()}}
+  <div class="control-group">
+    <div class="controls">
+		<label class="radio inline" xstyle="width: 100px;">
+			{% for subfield in form.approved %}
+				{{ subfield }} {{ subfield.label }}
+			{% endfor %}
+		</label>
+    </div>
+  </div>
+	<button type="submit" class="btn">Save</button>
+</form>
+{% endif %}
+#}
+
+<div style="width: 400px; margin-left:auto; margin-right:auto;" class='shareaholic-canvas' data-shareaholic-widgets='share_buttons'></div>
+
+{% endblock %}

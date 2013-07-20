@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>Add Release to {{ game.game_title }}</h2>
+{% if error %}
+<div class="alert alert-error">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		<h4>Error!</h4>
+		{{ error }}
+</div>
+{% endif %}
+
+<form method="post" class="form-horizontal">
+  {{ form.hidden_tag() }}
+  {% include 'release_form.html' %}
+
+  <div class="control-group {% if form.release_description.errors %}error{% endif %}">
+    <label class="control-label" for="{{ form.release_description.id }}">{{ form.release_description.label }}</label>
+    <div class="controls">			
+			{{ form.release_description(class="input-xxlarge", rows="3") }}
+				{% if form.release_description.errors %}
+					<span class="help-inline">{% for error in form.release_description.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+			<span class="help-block">{{ form.release_description.description }}</span>			
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Add Release</button>
+  </div>
+</form>
+
+{% endblock %}
