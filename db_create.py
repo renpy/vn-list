@@ -8,7 +8,7 @@ from app import db
 
 #import os.path
 
-if 1==2:
+if 1==1:
     print "dropping tables"
     db.drop_all()
     
@@ -23,7 +23,7 @@ db.create_all()
 print "importing modules module"
 from app import models
 
-if 1==2:
+if 1==1:
       db.session.add_all([
         models.Category('Visual Novel', 1, True, 'vn'),
         models.Category('Kinetic Novel', 1, True, 'kn'),
@@ -63,8 +63,8 @@ if 1==2:
         models.Platform('Linux'),
         models.Platform('Other')])
 
-      db.session.add_all([
-        models.UserAccount('admin', '21232f297a57a5a743894a0e4a801fc3', '', 1, 1)]) #TEST. REMOVE THIS!
+#      db.session.add_all([
+#        models.UserAccount('admin', '21232f297a57a5a743894a0e4a801fc3', '', 1, 1)]) #TEST. REMOVE THIS!
 
       db.session.add_all([
         models.AgeRating('All ages', 'All ages, no sexual content', False),

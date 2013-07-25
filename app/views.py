@@ -3,8 +3,9 @@ from flask import render_template, request, session, redirect, url_for, abort, f
 
 from PIL import Image
 #import Image
-import os, sys, string, random, datetime, md5, uuid, math, shutil
+import os, sys, string, random, datetime, uuid, math, shutil, hashlib, random
 import socket, json
+import re
 from datetime import date, timedelta
 from werkzeug import secure_filename
 from sqlalchemy.orm import sessionmaker
@@ -96,7 +97,10 @@ def return_games(category=None, order=None, game_slug=None, approved=True, platf
     if game_slug: #single game listing
         games = games.filter(Game.slug==game_slug)
     else:
-        games = games.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==approved))
+        if approved:
+            games = games.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==approved))
+        else:
+            games = games.filter(Game.approved==approved)
     if letter:
         games = games.filter(Game.game_title.op('ilike')(letter+"%"))
     if search:
@@ -139,6 +143,13 @@ def select_random_games(num):
         game = Game.query.filter(Game.id==res.game_id).one()
         res.game_title = game.game_title
         res.slug = game.slug
+        res.developer = game.developer
+        res.categories = game.categories
+        res.playtime = game.playtime
+        res.words = game.words
+        res.age_rating = game.age_rating
+        
+        
         screenshots.append(res)
     return screenshots
 	
@@ -147,13 +158,13 @@ def select_recent_games(num):
     result = Game.query.join(Release)
     result = result.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==True))
 #    result = result.add_columns(Release.release_date, Game.game_title, Game.slug, Game.screenshot, Game.description)
-    result = result.order_by(Game.id.desc()).limit(num)
+    result = result.order_by(Game.id.desc()).limit(num+1)
     return result
 
 @app.route('/')
 def index():
     screenshots = select_random_games(5)
-    recent_games = select_recent_games(5)
+    recent_games = select_recent_games(6)
     return render_template('index.html', screenshots=screenshots, recent_games=recent_games, navigation=return_navigation(), site_data=site_data())
 
 @app.route('/name/<filter>')
@@ -293,19 +304,32 @@ def edit_game(game_slug):
         words = form.words.data
         words = words.replace(",", "")
         words = words.replace(".", "")
+        try:
+            words = int(re.search(r'(0|(-?[1-9][0-9]*))', words).group(0))
+        except TypeError: # Catch exception if re.search returns None
+            words = 0
+
         if not words:
             words = 0        
         game.words = words
         
         playtime = 0
         if form.playtime.data:
-            playtime = float(form.playtime.data)
+            try:
+                playtime = float(form.playtime.data)
+            except TypeError: 
+                try:
+                    playtime = int(re.search(r'(0|(-?[1-9][0-9]*))', form.playtime.data).group(0))
+                except TypeError: # Catch exception if re.search returns None
+                    playtime = 0
+            #playtime = float(form.playtime.data)
             if form.playtime_unit.data == 'hours':
                 playtime = playtime * 60
                 game.playtime = int(math.ceil(playtime))
             else:
                 #game.playtime = 0
-                game.playtime = form.playtime.data
+                #game.playtime = form.playtime.data
+                game.playtime = playtime
         if game.words == 0:
             game.words_estimate = playtime*200
         else:
@@ -402,16 +426,29 @@ def add_game():
         words = form.words.data
         words = words.replace(",", "")
         words = words.replace(".", "")
+        try:
+            words = int(re.search(r'(0|(-?[1-9][0-9]*))', words).group(0))
+        except TypeError: # Catch exception if re.search returns None
+            words = 0
         if not words:
             words = 0
         
+        playtime = 0
         if form.playtime.data:
-            playtime = float(form.playtime.data)
+            try:
+                playtime = float(form.playtime.data)
+            except TypeError: 
+                try:
+                    playtime = int(re.search(r'(0|(-?[1-9][0-9]*))', form.playtime.data).group(0))
+                except TypeError: # Catch exception if re.search returns None
+                    playtime = 0
             if form.playtime_unit.data == 'hours':
                 playtime = playtime * 60
-            playtime = int(math.ceil(playtime))
-        else:
-            playtime = 0
+                game.playtime = int(math.ceil(playtime))
+            else:
+                game.playtime = playtime
+            
+            
         if words == 0:
             words_estimate = playtime*200
         else:
@@ -422,7 +459,7 @@ def add_game():
         else:
             listed_on = 2 # games.renpy.org only
 
-        game = Game(game_title=game_title, slug=slug, maker = maker, description = description, age_rating_id=age_rating_id, words = words, words_estimate=words_estimate, playtime = playtime, developer_id=0, user_id=g.user.id, approved=False, listed_on=listed_on)
+        game = Game(game_title=game_title, slug=slug, maker = maker, description = description, age_rating_id=age_rating_id, words = words, words_estimate=words_estimate, playtime = playtime, developer_id=1, user_id=g.user.id, approved=False, listed_on=listed_on)
         db.session.add(game)
         db.session.commit()
 
@@ -434,7 +471,6 @@ def add_game():
         developer = Developer.query.filter(Developer.name==developer_name).first()
 
         if not developer:
-            print "entering new dev"
             if creator_type=='person':
                 type=1
                 person = Person('')
@@ -593,7 +629,7 @@ def resize_image(filename, game_slug):
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 app.add_url_rule(app.config['UPLOAD_URL']+'<filename>', 'uploaded_file', uploaded_file)
-    
+
 def image_normal(filename):
     return send_from_directory(app.config['IMAGE_UPLOAD_FOLDER'], filename)
 app.add_url_rule(app.config['IMAGE_UPLOAD_URL']+'<filename>', 'image_normal', image_normal)
@@ -618,7 +654,15 @@ def login():
         session['remember_me'] = formoid.remember_me.data
         return oid.try_login(formoid.openid.data, ask_for = ['nickname', 'email'])
     if form.validate_on_submit():
-        password = md5.md5(form.password.data).hexdigest()
+        
+        #password = md5.md5(form.password.data).hexdigest()
+        
+        user = UserAccount.query.filter(UserAccount.username==form.username.data).first()
+        salt = user.password.split('$')
+        salt = salt[1]
+        #print salt
+        password = 'sha1$'+salt+'$'+hashlib.sha1(salt + form.password.data).hexdigest()
+#        password = hashlib.sha1(form.password.data).hexdigest()
         user = UserAccount.query.filter(and_(UserAccount.username==form.username.data, UserAccount.password==password)).first()
         if not user:
             error = 'Invalid username or password.'
@@ -660,7 +704,12 @@ def signup():
     error = ''
     form = SignupForm()
     if form.validate_on_submit():
-        user = UserAccount(username=form.username.data, password=md5.md5(form.password.data).hexdigest(), email = form.email.data, role = ROLE_USER)
+        chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
+        salt = ''.join(random.choice(chars) for x in range(5))
+
+        password = password = 'sha1$'+salt+'$'+hashlib.sha1(salt + form.password.data).hexdigest()
+#        user = UserAccount(username=form.username.data, password=md5.md5(form.password.data).hexdigest(), email = form.email.data, role = ROLE_USER)
+        user = UserAccount(username=form.username.data, password=password, email = form.email.data, role = ROLE_USER)
         db.session.add(user)
         db.session.commit()
         flash('You have signed up successfully. Please log in.')
@@ -794,8 +843,9 @@ def account_settings():
 @app.route('/developer/<developer>')
 def developer_info(developer):
     games = Game.query.filter(Game.developer_id==developer).all()
+    num_of_games = len(games)
     developer = Developer.query.filter(Developer.id==developer).one()
-    return render_template('developer.html', developer=developer, games=games, navigation=return_navigation(), site_data=site_data())
+    return render_template('developer.html', num_of_games=num_of_games, developer=developer, games=games, navigation=return_navigation(), site_data=site_data())
 
 @app.route('/test/domain/<domain_id>')
 def change_domain_testing(domain_id):
@@ -833,51 +883,39 @@ def approve_game(id, slug):
     db.session.commit()
     return redirect(url_for('game_details', game_slug=slug))
 
-@app.route('/getvndb/<slug>')
-def get_vndb(slug):
-#http://thomasfischer.biz/?p=622
-    game = Game.query.filter(Game.slug==slug).one()
-    title=game.game_title
-    form = ReleaseForm()
-    error = None
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(3)
-    #host = 'beta.vndb.org'
-    host = 'api.vndb.org'
-    host = socket.gethostbyname(host)
-    s.connect((host, 19534))
-    print "connected"
-
-    data = {"protocol":1,"client":"test","clientver":0.1,"username":"leonz","password":"ZOTVfsjw68t9"}
-    data = "login " + json.dumps(data) + "\x04"
-    #s.send('login {"protocol":1,"client":"test","clientver":0.1,"username":"leonz","password":"ZOTVfsjw68t9"}' + "\x04")
-    s.send(data)
-    print "data sent"
+# @app.route('/getvndb/<slug>')
+# def get_vndb(slug):
+    ##http://thomasfischer.biz/?p=622
+    # game = Game.query.filter(Game.slug==slug).one()
+    # title=game.game_title
+    # form = ReleaseForm()
+    # error = None
+    # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # s.settimeout(3)
+    # host = 'api.vndb.org'
+    # host = socket.gethostbyname(host)
+    # s.connect((host, 19534))
+    # print "connected"
+    # data = {"protocol":1,"client":"test","clientver":0.1,"username":"leonz","password":"ZOTVfsjw68t9"}
+    # data = "login " + json.dumps(data) + "\x04"
+    # s.send(data)
+    # print "data sent"
     
-    data_rec = s.recv(1024)
-    print "data received"
-    print data_rec
-    
-    #title = "Bionic Heart"
-    #title = "sdfgsdF"
-    s.send('get vn basic (title="' +title+ '")' + "\x04")
-    data_rec = s.recv(1024)
-    data_rec = data_rec.replace('results ', '')[:-1]
-    print data_rec
-    result = json.loads(data_rec)
-    print result
-    num = result['num']
-    s.close()
-
-    if num > 0:
-        exists=True
-        #return "Exist."
-    else:
-        exists=False
-        #return "Doesn't exist."
-    
-    
-    return render_template('vndb.html', exists=exists, game=game, site_data=site_data(), navigation=return_navigation(), error=error)
+    # data_rec = s.recv(1024)
+    # print "data received"
+    # print data_rec
+    # s.send('get vn basic (title="' +title+ '")' + "\x04")
+    # data_rec = s.recv(1024)
+    # data_rec = data_rec.replace('results ', '')[:-1]
+    # print data_rec
+    # result = json.loads(data_rec)
+    # print result
+    # num = result['num']
+    # s.close()
+    # if num > 0:
+        # exists=True
+    # else:
+        # exists=False    
+    # return render_template('vndb.html', exists=exists, game=game, site_data=site_data(), navigation=return_navigation(), error=error)
 
     

@@ -27,14 +27,19 @@
 
 {% if game.screenshots %}
 <div class="pull-right" style="margin-left: 15px;">
+      {% if game.screenshot.filename[:11]=="screenshot/" %}
+      <img class="img-polaroid" src="http://renai.us/site_media/media/screenshot/small/{{ game.screenshot.filename[11:] }}"  xwidth="240" alt="{{ game.game_title }} thumbnail"/>
+      {% else %}
       <img class="img-polaroid" src="{{ url_for('image_small', filename=game.screenshot.filename) }}"  width="240" alt="{{ game.game_title }} thumbnail"/>
+      
+      {% endif %}
 </div>
 {% endif %}
 
 <h2 style="font-size: 140%;">
 {% if game.developer_id %}
-{{ game.developer.name }}
-{# <a href="{{ url_for('developer_info', developer=game.developer_id) }}">{{ game.maker }}</a>  #}
+{# {{ game.developer.name }} #}
+  <a href="{{ url_for('developer_info', developer=game.developer_id) }}">{{ game.developer.name }}</a>
 {% else %}
 {{ game.maker }} 
 {% endif %}
@@ -44,17 +49,21 @@
 </h2>
 <p style="margin-left: 20px;">{{ game.description }}</p>
 
+{#
 <p>More info: <a href="{% if 1==1 %}http://vndb.org/v2{% else %}{{ url_for('get_vndb', slug=game.slug) }}{% endif %}">VNDB.org</a>{% if 1==1 %} &bull; <a href="#">Lemma Soft Forums</a>{% endif %}</p>
+#}
 
 <p style="font-size: 130%;">
 {{ game.releases[0].release_date.strftime('%b %d, %Y') }} &bull;
-{% if game.playtime %} 
+
+{% if game.playtime>0 %}
 	{% if game.playtime>60 %} 
   	{{ "%.2f"|format(game.playtime/60) }} hours
 	{% else %}
 		{{ game.playtime }} minutes
 	{% endif %}	
 &bull;{% endif %}
+{% if game.playtime == -1 %}{{ game.temp_playtime }} &bull;{% endif %}	
 {% if game.words %}{{ '{:,}'.format(game.words) }} words &bull;{% endif %}
 <span {% if game.age_rating.is_adult %}class="label label-important"{% endif %}>{% if not game.age_rating.id == 1 %}Ages {% endif %}{{ game.age_rating.name}}</span>
 </p>
@@ -131,8 +140,12 @@
 {% endif %}
 
 
-<a class="fancybox" rel="gallery" href="{{ url_for('image_normal', filename=screenshot.filename) }}"><img src="{{ url_for('image_medium', filename=screenshot.filename) }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
+      {% if screenshot.filename[:11]=="screenshot/" %}
+<a class="fancybox" rel="gallery" href="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}"><img src="http://renai.us/site_media/media/screenshot/medium/{{ screenshot.filename[11:] }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
+      {% else %}
 
+<a class="fancybox" rel="gallery" href="{{ url_for('image_normal', filename=screenshot.filename) }}"><img src="{{ url_for('image_medium', filename=screenshot.filename) }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
+      {% endif %}
       </div>
 {% endfor %}
     </div>

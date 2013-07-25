@@ -1,7 +1,32 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<p>Developer: {{ developer.name }}</p>
+
+{# <h1>Developer info</h1> #}
+
+			<div id="userStats" class="clearfix">
+{#				<div class="pic">
+          <a href="#"><img src="img/user_avatar.jpg" width="150" height="150" /></a>				
+        </div>
+#}
+				<div class="data">
+          <h3>{{ developer.name }}</h3>
+          <h4>Individual creator.</h4>
+{#          <h5><a href="http://hellpanda.com/blog/">http://hellpanda.com/blog/</a></h5> #}
+          
+{#            <div class="socialMediaLinks"><a href="http://twitter.com/rebpanda" rel="me" target="_blank"><img src="img/twitter.png" /></a><a href="http://redeyesblackpanda.deviantart.com/" rel="me" target="_blank"><img src="img/DA.png" /></a>					
+            </div> #}
+        
+            {# <ul class="nav nav-list"><li class="divider"></li></ul> #}
+             <div class="sep"></div> 
+            
+            <ul class="numbers clearfix">
+              <li>Games<strong>{{ num_of_games }}</strong></li>  {# <li class="nobrdr">WIP<strong>3</strong></li> #}
+            </ul>
+				</div>
+			</div>
+			
+			<h1>Games by {{ developer.name }}:</h1>
 
 {% include 'game_list_normal.html' %}
 

@@ -5,9 +5,11 @@
 	
   {% if game.screenshot %}
     <a href="{{ url_for('game_details',game_slug=game.slug) }}" class="thumbnail">
-	
+      {% if game.screenshot.filename[:11]=="screenshot/" %}
+        <img class="img-polaroid" src="http://renai.us/site_media/media/screenshot/small/{{ game.screenshot.filename[11:] }}"  xwidth="240" alt="{{ game.game_title }} thumbnail"/>
+      {% else %}
       <img src="{{ url_for('image_small', filename=game.screenshot.filename) }}"  width="240" alt="{{ game.game_title }} thumbnail"/>
-
+      {% endif %}
     </a>
 	{% endif %}
 	<div style="padding: 5px; text-align: center;">
@@ -25,18 +27,19 @@
 {% else %}
 {{ game.maker }} 
 {% endif %}{% if game.link.url %} &bull; <a href="{{ game.link.url }}" rel="tooltip" title="{{ game.link.url }}">{{ game.link.name }}</a>{% endif %}</h2>
-
+    
 <p>{{ game.description }}</p>
 
 <p style="font-size: 130%;">
 {{ game.releases[0].release_date.strftime('%b %d, %Y') }} &bull;
-{% if game.playtime %} 
+{% if game.playtime > 0%}
 	{% if game.playtime>60 %} 
   	{{ "%.2f"|format(game.playtime/60) }} hours
 	{% else %}
 		{{ game.playtime }} minutes
 	{% endif %}	
 &bull;{% endif %}
+{% if game.playtime == -1 %}{{ game.temp_playtime }} &bull;{% endif %}	
 {% if game.words %}{{ '{:,}'.format(game.words) }} words &bull;{% endif %}
 <span {% if game.age_rating.is_adult %}class="label label-important"{% endif %}>{% if not game.age_rating.id == 1 %}Ages {% endif %}{{ game.age_rating.name}}</span>
 </p>

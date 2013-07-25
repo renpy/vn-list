@@ -1,6 +1,12 @@
 .flash    { background: #CEE5F5; padding: 0.5em; border: 1px solid #AACBE2; }
 .flasherror    { background: #F0D6D6; padding: 0.5em; }
 
+.center {
+  margin-left:auto;
+  margin-right:auto;
+  width:70%;
+}
+
 /* images */
 .imageRow {
   *zoom: 1;
@@ -120,4 +126,25 @@
   border-bottom-right-radius: 4px;
 }
 /* images - end */
+
+
+#userStats { display: block; width: 530px; background-color: #f9f9f9; border: 1px solid #ccc; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding: 12px; 
+font-size: 62.5%; font-family: Helvetica, Arial, sans-serif; line-height: 10%;}
+#userStats .pic { float: left; display: block; margin-right: 10px; }
+#userStats .pic a img { padding: 7px; background: #fff; border: 1px solid #ccc; }
+
+#userStats .data { float: left; display: block; position: relative; width: 350px; height: 166px; padding: 4px; padding-left: 15px; background: #e6e6e6; overflow:  hidden; box-sizing: border-box; -moz-box-sizing: border-box; }
+#userStats .data h1 { color: #474747; line-height: 1.6em; text-shadow: 0px 1px 1px #fff; }
+#userStats .data h3 { color: #666; line-height: 0.9em; margin-bottom: 5px; }
+#userStats .data h4 { font-size: 1.2em; line-height: 1.3em; }
+
+#userStats .data .socialMediaLinks { position: absolute; right: 6px; top: 8px; }
+#userStats .data .socialMediaLinks a img { margin-right: 5px; }
+
+#userStats .data .sep { clear: both; width: 320px; height: 1px; border-bottom: 1px solid #ccc; margin-bottom: 7px; }
+
+#userStats .data ul.numbers { list-style: none; width: 320px; margin-top: 0; color: #676767; }
+#userStats .data ul.numbers li { width: 95px; float: left; display: block; padding-left: 8px; height: 50px; border-right: 1px dotted #bbb; text-transform: uppercase; }
+#userStats .data ul.numbers li strong { color: #434343; display: block; font-size: 3.4em; line-height: 1.1em; font-weight: bold; }
+
 

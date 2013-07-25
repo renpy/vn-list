@@ -3,6 +3,7 @@ from sqlalchemy import Integer, String, Boolean, Date, Text, DateTime, SmallInte
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
+ROLE_SUPERUSER = 2
 USER_STATUS_ACTIVE = 1
 USER_STATUS_BANNED = 0
 class UserAccount(db.Model):
@@ -10,17 +11,24 @@ class UserAccount(db.Model):
     id = db.Column(Integer, primary_key=True)
     username = db.Column(db.String, index = True, unique = True)
     password = db.Column(db.String)
-    email = db.Column(db.String, index = True, unique = True)
+#    email = db.Column(db.String, index = True, unique = True)
+    email = db.Column(db.String, index = True)
     role = db.Column(db.SmallInteger, default=ROLE_USER)
     status = db.Column(db.SmallInteger, default=USER_STATUS_ACTIVE)
     password_reset_token = db.Column(db.String, unique = True)
     password_reset_expiration = db.Column(db.DateTime)
-    def __init__(self, username, password, email, role=ROLE_USER, status=USER_STATUS_ACTIVE):
+    last_login = db.Column(db.DateTime)
+    date_joined = db.Column(db.DateTime)
+
+    def __init__(self, username, password, email, role=ROLE_USER, status=USER_STATUS_ACTIVE, last_login=None, date_joined=None):
         self.username = username
         self.password = password
         self.email = email
         self.role = role
         self.status = status
+        self.last_login = last_login
+        self.date_joined = date_joined
+
     def __repr__(self):
         return "<Users('%s','%s','%s','%s','%s','%s')>" % (self.id, self.username, self.password, self.email, self.role, self.status)
     def is_authenticated(self): #This method should just return True. Used to check if the user is logged in.
@@ -132,7 +140,14 @@ class File(db.Model):
     filename = db.Column(db.String)
     description = db.Column(db.String)
     approved  = db.Column(db.Boolean, default=False)
+    def __init__(self, release_id, filename, description, approved=False, size=0):
+        self.release_id = release_id
+        self.filename = filename
+        self.description = description
+        self.approved = approved
+        self.size = size
 
+    
 class Release(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
@@ -147,13 +162,14 @@ class Release(db.Model):
     platforms_release_sql = db.relationship('PlatformRelease', lazy='dynamic')
     platforms = db.relationship('PlatformRelease', lazy='select')
     files = db.relationship('File', lazy='select')
-    def __init__(self, game_id, release_date, release_version, engine_id, release_description, engine_version, user_id):
+    def __init__(self, game_id, release_date, release_version, engine_id, release_description, engine_version, user_id, approved=False):
         self.game_id = game_id
         self.release_date = release_date
         self.release_version = release_version
         self.engine_id = engine_id
         self.release_description = release_description
         self.engine_version = engine_version
+        self.approved = approved
         self.user_id = user_id
     def __repr__(self):
         return "<Releases('%s','%s','%s','%s','%s','%s','%s','%s')>" % (self.id, self.game_id, self.release_date, self.release_version, self.engine_id, self.release_description, self.engine_version, self.user_id) 
@@ -163,12 +179,14 @@ class Screenshot(db.Model):
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
     filename = db.Column(db.String)
     caption = db.Column(db.Text)
-    is_thumb = db.Column(db.Boolean)
-    def __init__(self, game_id, filename, caption, is_thumb):
+    is_thumb = db.Column(db.Boolean, default=False)
+    approved  = db.Column(db.Boolean, default=False)
+    def __init__(self, game_id, filename, is_thumb=False, approved=False, caption=""):
         self.game_id = game_id
         self.filename = filename
         self.caption = caption
         self.is_thumb = is_thumb
+        self.approved = approved
     def __repr__(self):
         return "<Screenshots('%s','%s','%s','%s','%s')>" % (self.id, self.game_id, self.filename, self.caption, self.is_thumb)
 
@@ -187,14 +205,14 @@ class Developer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     type = db.Column(db.Integer) #group or person
-    user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'))
+    user_id = db.Column(db.Integer) #, db.ForeignKey('user_account.id'))
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     
     group = db.relationship('Group', lazy='select', uselist=False)
     person = db.relationship('Person', lazy='select', uselist=False)
     
-    def __init__(self, name, type, user_id, group_id=1, person_id=1):
+    def __init__(self, name, type=2, user_id=-1, group_id=1, person_id=1):
         self.name = name
         self.type = type
         self.user_id = user_id
@@ -232,17 +250,20 @@ class Game(db.Model):
     listed_on = db.Column(db.Integer, default=0)
     words_estimate = db.Column(db.Integer)
     
+    temp_tag = db.Column(db.String)
+    temp_playtime = db.Column(db.String)
+    
     developer = db.relationship('Developer', lazy='select', uselist=False)
     
     age_rating = db.relationship('AgeRating', lazy='select', uselist=False)
     link = db.relationship('LinkGame', lazy='select', uselist=False)
     categories =  db.relationship('CategoryGame', lazy='select')
-    screenshot = db.relationship('Screenshot', lazy='select', uselist=False, order_by=Screenshot.is_thumb)
+    screenshot = db.relationship('Screenshot', lazy='select', uselist=False, order_by=Screenshot.is_thumb.desc)
     screenshots = db.relationship('Screenshot', lazy='select')
     releases = db.relationship('Release', lazy='select', order_by=Release.release_date.desc)
     release = db.relationship('Release', lazy='select', uselist=False, order_by=Release.release_date.desc)
     
-    def __init__(self, game_title, slug, description, developer_id, words, words_estimate, playtime, user_id, maker, age_rating_id, listed_on, approved=False):
+    def __init__(self, game_title, slug, description, developer_id, words, words_estimate, playtime, user_id, maker, age_rating_id, listed_on, approved=False, created=None, temp_playtime="0", temp_tag=""):
         self.game_title = game_title
         self.description = description
         self.developer_id = developer_id
@@ -255,6 +276,8 @@ class Game(db.Model):
         self.approved = approved
         self.listed_on = listed_on
         self.age_rating_id = age_rating_id
-
+        self.temp_playtime = temp_playtime
+        self.temp_tag = temp_tag
+        self.created = created
     def __repr__(self):
         return "<Game ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')>" % (self.id, self.game_title, self.created, self.developer_id, self.slug, self.words, self.playtime, self.user_id, self.age_rating, self.approved, self.maker, self.listed_on)

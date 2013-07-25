@@ -44,7 +44,13 @@
         max-height: 350px;
         overflow: hidden;
       }
-      
+      .tooltip-inner {
+        xwhite-space: nowrap;
+        text-align: left;
+        padding-right: 40px;
+        padding-left: 10px;
+      }
+
 
       @media (max-width: 980px) {
         /* Enable use of floated navbar text */
@@ -54,6 +60,9 @@
           padding-right: 5px;
         }
       }
+      
+      
+            
     </style>
 
 {# TO DO: need html5shiv.js #}
@@ -176,15 +185,16 @@ $(document).ready(function() {
   <script>
   $(function() {
     $( "#datepicker" ).datepicker();
-  });
+  });  
   </script>
         <script type="text/javascript">
-            $(function () {
-                $("[rel='tooltip']").tooltip();
+            $('body').tooltip({
+              selector: '[rel=tooltip]'
             });
             $(function () {
                 $("[rel='popover']").popover();
             });            
+
         </script>
         
         <script>
