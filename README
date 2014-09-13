@@ -1,0 +1,12 @@
+Requirements:
+Python 2.7.6
+PostgreSQL 9.3.2
+Packages: flask, sqlalchemy==0.7.9, Flask-SQLAlchemy, psycopg2, flask-login, flask-openid, flask-wtf, flask-mail, pil
+
+Install:
+- Edit config.py with your settings. Make sure an empty database with the name in the settings exists. Email settings are for error reporting and contact. Set DOMAIN_ID to corespond to the domain it's running on.
+- Use db_create.py to create the database. Note: comment out importing of views in the last line in __init__.py before running db_create.py, then uncomment it back.
+- Import the data by running import.py (this is assuming database name renaius and user postgres).
+- Run import2.py after the data is imported; this will convert playtimes to estimated wordcounts. It will output a short list where this is not possible. Save this output, so they can be entered manually.
+- At his point images that are missing (on all imported games) are being fetched directly from renai.us. They should be moved and resized.
+

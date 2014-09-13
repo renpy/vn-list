@@ -1,4 +1,4 @@
-#packages: flask, sqlalchemy==0.7.9, Flask-SQLAlchemy, sqlalchemy-migrate, psycopg2, flask-login, flask-openid, flask-wtf, flask-mail, pillow(?), pil
+#packages: flask, sqlalchemy==0.7.9, Flask-SQLAlchemy, sqlalchemy-migrate, psycopg2, flask-login, flask-openid, flask-wtf, flask-mail, pillow, pil
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 import os

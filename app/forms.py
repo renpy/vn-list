@@ -1,6 +1,14 @@
-from flask.ext.wtf import Form, StringField, BooleanField, PasswordField, RadioField, FileField, SubmitField, TextAreaField, SelectMultipleField, HiddenField, DateField, Required, Length, Email, ValidationError, URL, Optional, widgets
+#from flask.ext.wtf import Form, StringField, BooleanField, PasswordField, RadioField, FileField, SubmitField, TextAreaField, SelectMultipleField, HiddenField, DateField, Required, Length, Email, ValidationError, URL, Optional, widgets
+
+from flask.ext.wtf import Form
+from wtforms import StringField, BooleanField, PasswordField, RadioField, FileField, SubmitField, TextAreaField, SelectMultipleField, HiddenField, DateField, widgets
+from wtforms.validators import Required, Length, Email, ValidationError, URL, Optional
+
 import re
 from models import Game, AgeRating, CategoryGroup, Engine, Platform
+
+
+
 
 #class MyTextInput(TextInput):
 #    def __init__(self, error_class=u'has_errors'):

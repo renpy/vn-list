@@ -589,7 +589,7 @@ def add_screenshot(game_slug=''):
             screenshot = Screenshot(game_id=game_id, filename=outfilename, caption=request.form['caption'], is_thumb=is_thumb)
             db.session.add(screenshot)
             db.session.commit()
-			
+
             return redirect(url_for('add_screenshot', game_slug=game_slug))
     return render_template('add_screenshot.html', game=game, navigation=return_navigation(), is_thumb=is_thumb, site_data=site_data())
 
