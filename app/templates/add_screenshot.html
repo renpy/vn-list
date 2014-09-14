@@ -12,10 +12,21 @@
 
   <div class="imageRow">
   	<div class="set">
-{% for screenshot in game.screenshots %}	  
+{% for screenshot in game.screenshots %}
+
+      
       <div class="single {% if loop.first %}first{% endif %}{% if loop.last %}last{% endif %}">
-<a href="{{ url_for('image_normal', filename=screenshot.filename) }}" title=" {{ screenshot.caption }}"><img src="{{ url_for('image_small', filename=screenshot.filename) }}" width="240" Xheight="315" alt="{{ screenshot.caption}} " /></a>
+        <a href="{{ url_for('image_normal', filename=screenshot.filename) }}" title=" {{ screenshot.caption }}"><img src="{{ url_for('image_small', filename=screenshot.filename) }}" width="240" Xheight="315" alt="{{ screenshot.caption}} " /></a>
+        {% if g.user.role==1 or g.user.role==2 %}
+            {% if game.screenshot.filename[:11]=="screenshot/" %}
+                <a href="{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}" class="btn btn-danger">Delete</a>
+            {% else %}
+                <a href="{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}" class="btn btn-danger">Delete</a>
+            {% endif %}        
+        {% endif %}
       </div>
+      
+      
 {% endfor %}	  
     </div>	
   </div>

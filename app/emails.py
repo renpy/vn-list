@@ -2,7 +2,8 @@ from flask.ext.mail import Message
 from app import mail
 from threading import Thread
 from flask import render_template
-from config import ADMINS, DOMAIN_TITLE
+from config import ADMINS
+from config_more import DOMAIN_TITLE
 
 def send_async_email(msg):
     mail.send(msg)

@@ -1,6 +1,8 @@
 from app import app, db, lm, oid
 from flask import render_template, request, session, redirect, url_for, abort, flash, g, send_from_directory
 
+
+
 from PIL import Image
 #import Image
 import os, sys, string, random, datetime, uuid, math, shutil, hashlib, random
@@ -883,6 +885,28 @@ def approve_game(id, slug):
     db.session.commit()
     return redirect(url_for('game_details', game_slug=slug))
 
+@app.route('/delete_screenshot/<slug>/<id>')
+def delete_screenshot(slug, id):
+    screenshot = Screenshot.query.filter_by(id=id).first()
+    filename = screenshot.filename
+    os.remove(os.path.join(app.config['IMAGE_UPLOAD_FOLDER'], filename))
+    os.remove(os.path.join(app.config['IMAGE_UPLOAD_FOLDER_SMALL'], filename))
+    os.remove(os.path.join(app.config['IMAGE_UPLOAD_FOLDER_MEDIUM'], filename))
+    db.session.delete(screenshot)
+    db.session.commit()
+    return redirect(url_for('add_screenshot', game_slug=slug))
+
+@app.route('/delete_file/<slug>/<id>')
+def delete_file(slug, id):
+    file = File.query.filter_by(id=id).first()
+    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+    db.session.delete(file)
+    db.session.commit()
+    return redirect(url_for('game_details', game_slug=slug))
+    
+    
+    
+    
 # @app.route('/getvndb/<slug>')
 # def get_vndb(slug):
     ##http://thomasfischer.biz/?p=622

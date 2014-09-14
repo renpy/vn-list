@@ -109,7 +109,10 @@ try:
         cats = cur2.fetchall()
         for cat in cats:
             #print cat[2]
-            category_id = models.Category.query.filter(models.Category.slug==cat[2]).one()
+            try:
+                category_id = models.Category.query.filter(models.Category.slug==cat[2]).one()
+            except:
+                print cat[2]
             categories_game = models.CategoryGame(game_id=game.id, category_id=category_id.id)
             db.session.add(categories_game)
 
@@ -160,7 +163,7 @@ try:
             if rel[7]:
                 db.session.add(models.PlatformRelease(release_id=release.id, platform_id=3))
             if (not rel[5]) and (not rel[6]) and (not rel[7]):
-                db.session.add(models.PlatformRelease(release_id=release.id, platform_id=6))
+                db.session.add(models.PlatformRelease(release_id=release.id, platform_id=4))
             
             db.session.commit()
         
