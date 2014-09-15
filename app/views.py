@@ -308,7 +308,7 @@ def edit_game(game_slug):
         words = words.replace(".", "")
         try:
             words = int(re.search(r'(0|(-?[1-9][0-9]*))', words).group(0))
-        except TypeError: # Catch exception if re.search returns None
+        except: # Catch exception if re.search returns None
             words = 0
 
         if not words:
@@ -409,7 +409,8 @@ def add_game():
     error = ''
     developers = '['
     for developer in Developer.query.filter(Developer.id>0).order_by(Developer.type):
-        developer.name = developer.name.replace("'", "")
+        developer.name = developer.name.replace("'", "\\'")
+        developer.name = developer.name.replace('"', '\\"')
         developers += '"'+developer.name+'",'
     developers = developers[:-1]
     developers += ']'
@@ -430,7 +431,7 @@ def add_game():
         words = words.replace(".", "")
         try:
             words = int(re.search(r'(0|(-?[1-9][0-9]*))', words).group(0))
-        except TypeError: # Catch exception if re.search returns None
+        except: # Catch exception if re.search returns None
             words = 0
         if not words:
             words = 0
