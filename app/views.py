@@ -100,7 +100,14 @@ def return_games(category=None, order=None, game_slug=None, approved=True, platf
         games = games.filter(Game.slug==game_slug)
     else:
         if approved:
-            games = games.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==approved))
+            if site_data_var['domain_id'] == site_data_var['renai_archive_id']:            
+                games = games.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==approved)) 
+                #.having(count(Game.releases.id) > 2) #, Game.releases.files.count() > 0)
+                
+                
+                
+            else:
+                games = games.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==approved))            
         else:
             games = games.filter(Game.approved==approved)
     if letter:
@@ -904,9 +911,17 @@ def delete_file(slug, id):
     db.session.delete(file)
     db.session.commit()
     return redirect(url_for('game_details', game_slug=slug))
+
+@app.route('/set_thumbnail/<slug>/<id>', methods=['GET', 'POST'])
+def set_thumbnail(slug, id):
+    screenshots = Game.query.filter_by(slug=slug).first().screenshots
+    for screenshot in screenshots:
+        screenshot.is_thumb = False
+    screenshot = Screenshot.query.filter_by(id=id).first()
+    screenshot.is_thumb = True
     
-    
-    
+    db.session.commit()
+    return redirect(url_for('add_screenshot', game_slug=slug))
     
 # @app.route('/getvndb/<slug>')
 # def get_vndb(slug):

@@ -249,12 +249,10 @@ class Game(db.Model):
     developer_id = db.Column(db.Integer, db.ForeignKey('developer.id'))
     listed_on = db.Column(db.Integer, default=0)
     words_estimate = db.Column(db.Integer)
-    
     temp_tag = db.Column(db.String)
     temp_playtime = db.Column(db.String)
     
     developer = db.relationship('Developer', lazy='select', uselist=False)
-    
     age_rating = db.relationship('AgeRating', lazy='select', uselist=False)
     link = db.relationship('LinkGame', lazy='select', uselist=False)
     categories =  db.relationship('CategoryGame', lazy='select')

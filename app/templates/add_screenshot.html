@@ -10,26 +10,41 @@
   </div>
   {% endif %}
 
-  <div class="imageRow">
-  	<div class="set">
+<div>
+
 {% for screenshot in game.screenshots %}
 
       
-      <div class="single {% if loop.first %}first{% endif %}{% if loop.last %}last{% endif %}">
-        <a href="{{ url_for('image_normal', filename=screenshot.filename) }}" title=" {{ screenshot.caption }}"><img src="{{ url_for('image_small', filename=screenshot.filename) }}" width="240" Xheight="315" alt="{{ screenshot.caption}} " /></a>
-        {% if g.user.role==1 or g.user.role==2 %}
-            {% if game.screenshot.filename[:11]=="screenshot/" %}
-                <a href="{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}" class="btn btn-danger">Delete</a>
+    <div style="float: left; padding-right: 20px;">
+      
+        <div style="padding-bottom: 20px;">
+            {% if screenshot.filename[:11]=="screenshot/" %}
+                <a href="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}" title=" {{ screenshot.caption }}"><img src="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}" width="240" alt="{{ screenshot.caption}} " /></a>
             {% else %}
-                <a href="{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}" class="btn btn-danger">Delete</a>
-            {% endif %}        
-        {% endif %}
-      </div>
-      
-      
+                <a href="{{ url_for('image_normal', filename=screenshot.filename) }}" title=" {{ screenshot.caption }}"><img src="{{ url_for('image_small', filename=screenshot.filename) }}" width="240" alt="{{ screenshot.caption}} " /></a>
+            {% endif %}
+        </div>  
+
+        <div>
+            {% if g.user.role==1 or g.user.role==2 %}
+                {% if screenshot.filename[:11]=="screenshot/" %}
+                    <a href="{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}" class="btn btn-danger">Delete</a>
+                {% else %}
+                    <a href="{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}" class="btn btn-danger">Delete</a>
+                {% endif %}
+                
+                <form action="{{ url_for('set_thumbnail', slug=game.slug, id=screenshot.id) }}" method="post">
+                    <input onChange="this.form.submit();" type="radio" name="set_thumbnail" value="{{ screenshot.id }}" id="{{ screenshot.id }}" {% if screenshot.is_thumb %}checked="true"{% endif %} /><label for="{{ screenshot.id }}">Set thumbnail</label>
+                </form>
+                
+            {% endif %}
+        </div>
+    </div>
+
 {% endfor %}	  
-    </div>	
-  </div>
+</div>
+  
+  <div class="clearfix"></div>
   
 <form method="post" class="form" enctype="multipart/form-data">
   <fieldset>
