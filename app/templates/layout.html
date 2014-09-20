@@ -117,7 +117,15 @@
 	
     <script src="/static/jquery-ui-1.10.3.custom.min.js"></script>
     
-    
+{# TO DO: include only on add_game: #}    
+{% if developers %}
+<script type="text/javascript" src="/static/js/typeahead.js"></script>
+<script type="text/javascript">
+    var developers = {{ developers|safe }};
+</script>
+<script type="text/javascript" src="/static/js/typeahead.developers.js"></script>
+{% endif %}
+        
 		<script type="text/javascript">
 			$('.carousel').carousel({
 						interval: 7000

@@ -1,63 +1,62 @@
-  <div class="control-group {% if form.release_date.errors %}error{% endif %}">
-    <label class="control-label" for="datepicker">{{ form.release_date.label }}</label>
-    <div class="controls">			
-			{{ form.release_date(placeholder="MM/DD/YYYY", id="datepicker") }}
-      
-				{% if form.release_date.errors %}
-					<span class="help-inline">{% for error in form.release_date.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
-				{% endif %}
-			<span class="help-block">{{ form.release_date.description }}</span>			
+    <div class="form-group {% if form.release_date.errors %} has-error has-feedback{% endif %}">
+        <label class="control-label col-md-4" for="datepicker">{{ form.release_date.label }}</label>
+        <div class="col-md-2">
+            {{ form.release_date(placeholder="MM/DD/YYYY", id="datepicker", class="form-control") }}
+            {% if form.release_date.errors %}<span class="glyphicon glyphicon-remove form-control-feedback"></span>{% endif %}
+        </div>
+        {% if form.release_date.errors %}
+            <span class="help-inline text-danger">{% for error in form.release_date.errors %}<strong><span class="glyphicon glyphicon-asterisk"></span> {{ error }}</strong><br />{% endfor %}</span>
+        {% endif %}
+        <div class="col-md-4"><span class="help-block">{{ form.release_date.description }}</span></div>
     </div>
-  </div>
 
-  <div class="control-group {% if form.release_version.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.release_version.id }}">{{ form.release_version.label }}</label>
-    <div class="controls">			
-			{{ form.release_version(class="input-mini") }}
-				{% if form.release_version.errors %}
-					<span class="help-inline">{% for error in form.release_version.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
-				{% endif %}
-			<span class="help-block">{{ form.release_version.description }}</span>			
+    <div class="form-group {% if form.release_version.errors %} has-error{% endif %}">
+        <label class="control-label col-md-4" for="{{ form.release_version.id }}">{{ form.release_version.label }}</label>
+        <div class="col-md-2">
+            {{ form.release_version(class="form-control") }}
+        </div>
+        {% if form.release_version.errors %}
+            <span class="help-inline text-danger">{% for error in form.release_version.errors %}<strong><span class="glyphicon glyphicon-asterisk"></span> {{ error }}</strong><br />{% endfor %}</span>
+        {% endif %}
+        <div class="col-md-4"><span class="help-block">{{ form.release_version.description }}</span></div>
     </div>
-  </div>
 
-  <div class="control-group {% if form.platforms.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.platforms.id }}">{{ form.platforms.label }}</label>
-    <div class="controls">
+  <div class="form-group {% if form.platforms.errors %} has-error{% endif %}">
+    <label class="control-label col-md-4" for="{{ form.platforms.id }}">{{ form.platforms.label }}</label>
+    <div class="col-md-4">
 				{% for subfield in form.platforms %}
-				<label class="checkbox inline">
+				<label class="checkbox-inline">
 					{{ subfield }} {{ subfield.label }}
 				</label>
 				{% endfor %}
+    </div>
 				{% if form.platforms.errors %}
-					<span class="help-inline">{% for error in form.platforms.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+					<span class="help-inline text-danger">{% for error in form.platforms.errors %}<strong><span class="glyphicon glyphicon-asterisk"></span> {{ error }}</strong><br />{% endfor %}</span>
 				{% endif %}
-			<span class="help-block">{{ form.platforms.description }}</span>			
+			<div class="col-md-4"><span class="help-block">{{ form.platforms.description }}</span></div>
+    
     </div>
-  </div>
 	
-  <div class="control-group {% if form.engine_id.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.engine_id.id }}">{{ form.engine_id.label }}</label>
-    <div class="controls">			
-				{% for subfield in form.engine_id %}
-				<label class="radio inline">
-					{{ subfield }} {{ subfield.label }}
-				</label>
-				{% endfor %}
-				{% if form.engine_id.errors %}
-					<span class="help-inline">{% for error in form.engine_id.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
-				{% endif %}
-			<span class="help-block">{{ form.engine_id.description }}</span>			
+  <div class="form-group {% if form.engine_id.errors %} has-error{% endif %}">
+    <label class="control-label col-md-4" for="{{ form.engine_id.id }}">{{ form.engine_id.label }}</label>
+    <div class="col-md-4">
+        {% for subfield in form.engine_id %}
+            <label class="radio-inline">
+                {{ subfield }} {{ subfield.label }}
+            </label>
+        {% endfor %} 
     </div>
+				{% if form.engine_id.errors %}
+					<span class="help-inline text-danger">{% for error in form.engine_id.errors %}<strong><span class="glyphicon glyphicon-asterisk"></span> {{ error }}</strong><br />{% endfor %}</span>
+				{% endif %}
+			<div class="col-md-4"><span class="help-block">{{ form.engine_id.description }}</span></div>
   </div>
 
-  <div class="control-group {% if form.engine_version.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.engine_version.id }}">{{ form.engine_version.label }}</label>
-    <div class="controls">			
-			{{ form.engine_version(class="input-mini") }}
-				{% if form.engine_version.errors %}
-					<span class="help-inline">{% for error in form.engine_version.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
-				{% endif %}
-			<span class="help-block">{{ form.engine_version.description }}</span>			
+    <div class="form-group {% if form.engine_version.errors %} has-error{% endif %}">
+        <label class="control-label col-md-4" for="{{ form.engine_version.id }}">{{ form.engine_version.label }}</label>
+        <div class="col-md-2">{{ form.engine_version(class="form-control") }}</div>
+        {% if form.engine_version.errors %}
+            <span class="help-inline text-danger">{% for error in form.engine_version.errors %}<strong><span class="glyphicon glyphicon-asterisk"></span> {{ error }}</strong><br />{% endfor %}</span>
+        {% endif %}
+        <div class="col-md-4"><span class="help-block">{{ form.engine_version.description }}</span></div>
     </div>
-  </div>

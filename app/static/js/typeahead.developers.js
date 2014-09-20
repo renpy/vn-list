@@ -21,14 +21,12 @@ var substringMatcher = function(strs) {
     cb(matches);
   };
 };
- 
-//var developers = [{{ developers|safe }}];
-var developers = ["asd", "ads"];
 
 $('#developers .typeahead').typeahead({
-  hint: true,
+  hint: false,
   highlight: true,
-  minLength: 1
+  minLength: 1,
+  limit: 10
 },
 {
   name: 'developers',
