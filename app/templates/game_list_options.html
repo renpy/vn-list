@@ -1,26 +1,13 @@
 <div class="pull-right">
-{% if games %}
-{#
-<div class="btn-group">
-    <a class="btn" href="#"><i class="icon-th-large"></i></a>
-    <a class="btn" href="#"><i class="icon-th-list"></i></a>
-    <a class="btn" href="#"><i class="icon-list"></i></a>
+    {% if games %}
+        <div class="btn-group">
+            <a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#">Sort <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="?order=title">Sort by Name</a></li>
+                <li><a href="?order=date">Sort by Date</a></li>
+                <li><a href="?order=words">Sort by Playtime</a></li>
+            </ul>
+        </div>
+    {% endif %}
+    <a class="btn btn-default" href="{{ url_for('add_game') }}">Add a New Game</a>
 </div>
-#}
-
-<div class="btn-group">
-  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-    Sort
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu">
-		<li><a href="?order=title">Sort by Name</a></li>
-		<li><a href="?order=date">Sort by Date</a></li>
-		<li><a href="?order=words">Sort by Playtime</a></li>
-  </ul>
-</div>
-{% endif %}
-  <a class="btn" href="{{ url_for('add_game') }}">Add a New Game</a>
-
-</div>
-

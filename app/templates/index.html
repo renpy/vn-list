@@ -13,10 +13,6 @@
 <h2>Recently added</h2>
 {% for recent in recent_games %}
 
-{#
-<li>{{ recent.release.release_date }}: <a href="{{ url_for('game_details', game_slug=recent.slug) }}" rel="popover" data-html="true" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{% if recent.screenshot.filename %}<img class='img-polaroid' src='{{ url_for('image_small', filename=recent.screenshot.filename) }}' width='240' alt='{{ recent.game_title }} thumbnail'/> {% endif %}{{ recent.description }}" title="{{ recent.game_title }}">{{ recent.game_title }}</a></li>
-#}
-
 <a href="{{ url_for('game_details', game_slug=recent.slug) }}" class="pull-left" style="margin-right: 20px;" rel="popover" data-html="true" data-toggle="popover" data-placement="{% if not loop.last %}right{% else %}left{% endif %}" data-trigger="hover" data-content="{% if recent.screenshot.filename %}{% if recent.screenshot.filename[:11]=="screenshot/" %}
     <img class='img-polaroid' src='http://renai.us/site_media/media/screenshot/small/{{ recent.screenshot.filename[11:] }}' alt='{{ recent.game_title }} thumbnail' />
   {% else %}<img class='img-polaroid' src='{{ url_for('image_small', filename=recent.screenshot.filename) }}' width='240' alt='{{ recent.game_title }} thumbnail'/> {% endif %}<br>
@@ -56,48 +52,48 @@
 
 <h2>Random games</h2>
 {% if screenshots %}
-<div id="myCarousel" class="carousel slide" style="width: 680px; height:540px;margin-left:auto; margin-right:auto;">
-  <ol class="carousel-indicators">
+<div id="myCarousel" class="carousel slide" style="width: 680px; height:540px; margin-left:auto; margin-right:auto;">
+    <ol class="carousel-indicators">
 		{% for screenshot in screenshots %}
-    <li data-target="#myCarousel" data-slide-to="{{ loop.index }}" {% if loop.first %}class="active"{% endif %}></li>
+            <li data-target="#myCarousel" data-slide-to="{{ loop.index }}" {% if loop.first %}class="active"{% endif %}></li>
 		{% endfor %}
-  </ol>
-  <!-- Carousel items -->
-  <div class="carousel-inner">
-  {% for screenshot in screenshots %}
-      <div class="item {% if loop.first %}active{% endif %}">
-      {% if screenshot.filename[:11]=="screenshot/" %}
-        <img src="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}" height="540" style="height:540px;" alt="{{
+    </ol>
+    <!-- Carousel items -->
+    <div class="carousel-inner">
+    {% for screenshot in screenshots %}
+        <div class="item {% if loop.first %}active{% endif %}">
+        {% if screenshot.filename[:11]=="screenshot/" %}
+            <img src="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}" height="540" style="height:540px;" alt="{{
         screenshot.caption}} " />
-      {% else %}
-				<img src="{{ url_for('image_normal', filename=screenshot.filename) }}" Xwidth="680" height="540" style="height:540px;" alt="{{
+        {% else %}
+            <img src="{{ url_for('image_normal', filename=screenshot.filename) }}" Xwidth="680" height="540" style="height:540px;" alt="{{
         screenshot.caption}} " />
-      {% endif %}
-				<div class="carousel-caption">
-					<h4><a href="{{ url_for('game_details', game_slug=screenshot.slug) }}">{{ screenshot.game_title }}</a> &bull; {{ screenshot.developer.name }}</h4>
-					<p><a href="{{ url_for('game_details', game_slug=screenshot.slug) }}">Click for more info</a> &bull; 
-          {% if screenshot.playtime>0 %}
-	{% if screenshot.playtime>60 %} 
-  	{{ "%.2f"|format(screenshot.playtime/60) }} hours
-	{% else %}
-		{{ screenshot.playtime }} minutes
-	{% endif %}	
-&bull;{% endif %}
-{% if screenshot.playtime == -1 %}{{ screenshot.temp_playtime }} &bull;{% endif %}	
-{% if screenshot.words %}{{ '{:,}'.format(screenshot.words) }} words &bull;{% endif %}
-<span {% if screenshot.age_rating.is_adult %}class="label label-important"{% endif %}>{% if not screenshot.age_rating.id == 1 %}Ages {% endif %}{{ screenshot.age_rating.name}}</span>
-&bull; 
-          {% for cat in screenshot.categories %}{{ cat.categories.name }}{% if not loop.last %}, {% endif %}{% endfor %}
-            </p>
-				</div>
+        {% endif %}
+            <div class="carousel-caption text-outline">
+                <h3><a href="{{ url_for('game_details', game_slug=screenshot.slug) }}">{{ screenshot.game_title }}</a><small style="color: #FFF;"> &bull; {{ screenshot.developer.name }}</small></h3>
+                <p><a href="{{ url_for('game_details', game_slug=screenshot.slug) }}">Click <u>here</u> for more info</a> &bull; 
+                {% if screenshot.playtime>0 %}
+                    {% if screenshot.playtime>60 %} 
+                    {{ "%.2f"|format(screenshot.playtime/60) }} hours
+                    {% else %}
+                        {{ screenshot.playtime }} minutes
+                    {% endif %}	
+                    &bull;
+                {% endif %}
+                {% if screenshot.playtime == -1 %}{{ screenshot.temp_playtime }} &bull;{% endif %}	
+                {% if screenshot.words %}{{ '{:,}'.format(screenshot.words) }} words &bull;{% endif %}
+                <span {% if screenshot.age_rating.is_adult %}class="label label-important"{% endif %}>{% if not screenshot.age_rating.id == 1 %}Ages {% endif %}{{ screenshot.age_rating.name}}</span>
+                &bull; 
+                {% for cat in screenshot.categories %}{{ cat.categories.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#myCarousel" data-slide="prev" role="button"><span class="glyphicon glyphicon-chevron-left"></span></a>  
+    <a class="carousel-control right" href="#myCarousel" data-slide="next" role="button"><span class="glyphicon glyphicon-chevron-right"></span></a>
 
-      </div>
-  {% endfor %}
-
-  </div>
-  <!-- Carousel nav -->
-  <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-  <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
 </div>
 
 {% endif %}

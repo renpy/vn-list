@@ -1,16 +1,16 @@
-<div style="width: 210px;" class="span2" id="navigation_side" >
+<div style="" class="col-md-2" id="navigation_side" >
 
-          <div class="well sidebar-nav">
+          <div class="well sidebar-nav myside">
 
 					{% if site_data.domain_id==site_data.renpy_list_id %}
 						<a href="http://www.renpy.org/wiki/renpy/Home_Page"><img src="http://www.renpy.org/mediawiki/WikiLogo.png" width="135" height="230" alt="Ren'Py Logo" style="padding-left: 15%; padding-right: 15%;" /></a>
 					{% endif %}
-            <ul class="nav nav-list">
+            <ul class="navX nav-list">
 			  
 
   			  {% for group in navigation %}
 						{% if not group.side_only %}
-							<li class="nav-header">{{ group.name }}</li>
+                            <h3 class="nav-header">{{ group.name }}</h3>
 								{% for item in group.categories %}
 									<li {% if item.slug==current_slug %}class="active"{% endif %}><a href="{% if group.name=='Other' %}{{ url_for('show_entries_special', special=item.slug) }}{% else %}{{ url_for('show_entries', filter=item.slug) }}{% endif %}">{{ item.name }}</a></li>
 								{% endfor %}
@@ -20,14 +20,14 @@
 							<li class="divider"></li>
 						{% else %}
 							{% if group.name=='By Name' %}
-							<li class="nav-header">{{ group.name }}</li>
+							<h3 class="nav-header">{{ group.name }}</h3>
 								{% for item in group.categories %}
 							<span {% if item.slug==current_slug %}class="active"{% endif %}><a href="{{ url_for('show_entries_letter', filter=item.slug) }}">{{ item.name }}</a></span>
 								{% endfor %}
 								<li class="divider"></li>
                             {% endif %}
 							{% if group.name=='By Year' %}
-							<li class="nav-header">{{ group.name }}</li>
+							<h3 class="nav-header">{{ group.name }}</h3>
 								{% for item in group.categories %}
 									<span {% if item.slug==current_slug %}class="active"{% endif %}><a href="{{ url_for('show_entries_year', filter=item.slug) }}">{{ item.name }}</a></span>
 									{% if loop.index is divisibleby 4 %}<br/>

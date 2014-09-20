@@ -148,3 +148,46 @@ font-size: 62.5%; font-family: Helvetica, Arial, sans-serif; line-height: 10%;}
 #userStats .data ul.numbers li strong { color: #434343; display: block; font-size: 3.4em; line-height: 1.1em; font-weight: bold; }
 
 
+.text-outline {
+    color: white;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;  
+}
+
+#navigation_side ul li {
+    margin 0;
+}
+
+#navigation_side {
+    width: 230px;
+}
+
+.nav-list {
+    list-style-type: none;
+    margin 0;
+    padding: 0 0 0 15px;
+}
+
+.nav-header {
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 20px;
+    color: #999999;
+    text-transform: uppercase;
+}
+
+.carousel-caption {
+    background-color: rgba(128, 128, 128, 0.5); 
+    left: 0px;
+    top: -30px; 
+    width: 680px;
+    height: 130px;
+    text-align: left;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+    
+    
