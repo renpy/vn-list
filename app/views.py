@@ -5,7 +5,7 @@ from flask import render_template, request, session, redirect, url_for, abort, f
 
 from PIL import Image
 #import Image
-import os, sys, string, random, datetime, uuid, math, shutil, hashlib, random
+import os, sys, string, random, datetime, uuid, math, shutil, hashlib, random, time, os.path
 import socket, json
 import re
 from datetime import date, timedelta
@@ -585,9 +585,14 @@ def add_screenshot(game_slug=''):
             filename = secure_filename(file.filename)
             game_id = game.id
             filename = game_slug + "-" + filename
-#            filename = "screenshot" + str(game_id) + filename
+
             filename2 = os.path.join(app.config['IMAGE_UPLOAD_FOLDER'], filename)
             #filename2 = filename.replace('\\', '/')
+            
+            if os.path.isfile(filename2):
+                fileName, fileExtension = os.path.splitext(filename2)
+                filename2 = fileName + '-' + time.strftime("%Y%m%d-%H%M%S") + fileExtension
+            
             file.save(filename2)
             outfilename = resize_image(filename, game_slug)
             try:
@@ -790,6 +795,9 @@ def upload_file(game_slug):
         uploaded_file = form.uploaded_file.data
         if uploaded_file: # and allowed_file(uploaded_file.filename):
             filename = secure_filename(uploaded_file.filename)
+            if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
+                fileName, fileExtension = os.path.splitext(filename)
+                filename = fileName + '-' + time.strftime("%Y%m%d-%H%M%S") + fileExtension
             uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         if form.edit.data:
