@@ -16,7 +16,7 @@ from models import UserAccount, Category, CategoryGroup, CategoryGame, Engine, L
 from config import ADMINS
 from config import DOMAIN_ID, RENAI_ARCHIVE_ID, RENPY_LIST_ID
 from config_more import START_YEAR, DOMAIN_TITLE, DOMAIN_URLS, DOMAIN_TITLES, DOMAIN_NAMES, START_YEARS
-from sqlalchemy import Table, and_, or_, desc 
+from sqlalchemy import Table, and_, or_, desc
 from forms import LoginForm, LoginFormOid, SignupForm, PassResetForm, NewPasswordForm, AdminGameApproveForm, UploadForm, AccountForm, ChangePasswordForm, GameForm, GameFormEdit, ReleaseForm
 
 def allowed_file_img(filename):
@@ -28,7 +28,7 @@ def allowed_file_img(filename):
 @lm.user_loader
 def load_user(id):
     return UserAccount.query.get(int(id))
-	
+
 @app.before_request
 def before_request():
     g.user = current_user
@@ -84,7 +84,7 @@ def return_navigation():
         item=str(item)
         group_year['categories'].append(dict(slug=item,name=item))
     cats.insert(0, group_year)
-    
+
     group_other = dict(name = 'Other')
     group_other['categories'] = [dict(slug='macintosh',name='Macintosh'), dict(slug='linux',name='Linux'), dict(slug='all',name='All Games'), dict(slug='quick',name='All Games (brief)'), dict(slug='no_screenshot',name='No Screenshot'), dict(slug='unapproved',name='Unapproved')]
     cats.append(group_other)
@@ -100,14 +100,14 @@ def return_games(category=None, order=None, game_slug=None, approved=True, platf
         games = games.filter(Game.slug==game_slug)
     else:
         if approved:
-            if site_data_var['domain_id'] == site_data_var['renai_archive_id']:            
-                games = games.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==approved)) 
+            if site_data_var['domain_id'] == site_data_var['renai_archive_id']:
+                games = games.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==approved))
                 #.having(count(Game.releases.id) > 2) #, Game.releases.files.count() > 0)
-                
-                
-                
+
+
+
             else:
-                games = games.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==approved))            
+                games = games.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==approved))
         else:
             games = games.filter(Game.approved==approved)
     if letter:
@@ -142,7 +142,7 @@ def select_random_games(num):
     screenshots = Screenshot.query.join(Game)
     screenshots = screenshots.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==True))
     screenshots = screenshots.filter(Screenshot.is_thumb==True)
-    num_screenshots = screenshots.count() #in case there is less screenshots in the db than required 
+    num_screenshots = screenshots.count() #in case there is less screenshots in the db than required
     if num > num_screenshots:
         num = num_screenshots
     screenshots = screenshots.all()
@@ -157,11 +157,11 @@ def select_random_games(num):
         res.playtime = game.playtime
         res.words = game.words
         res.age_rating = game.age_rating
-        
-        
+
+
         screenshots.append(res)
     return screenshots
-	
+
 def select_recent_games(num):
     site_data_var=site_data()
     result = Game.query.join(Release)
@@ -214,7 +214,7 @@ def show_entries(filter=''):
     for cat_group in category_groups:
         for cat in cat_group.categories:
             if filter == cat.slug:
-                valid_category = True                
+                valid_category = True
     if filter == 'all':
         valid_category = True
     order = request.args.get('order', None)
@@ -282,7 +282,7 @@ def game_details(game_slug=''):
         flash('Saved.')
     form.approved.data = str(game.listed_on)
     return render_template('game.html', game=game, form=form, navigation=return_navigation(), site_data=site_data())
-    
+
 @app.route('/statistics')
 def statistics():
     total = Game.query.count()
@@ -309,7 +309,7 @@ def edit_game(game_slug):
         game.creator_type = form.creator_type.data
         game.description = form.description_.data
         game.age_rating_id = form.age_rating_id.data
-        
+
         words = form.words.data
         words = words.replace(",", "")
         words = words.replace(".", "")
@@ -319,14 +319,14 @@ def edit_game(game_slug):
             words = 0
 
         if not words:
-            words = 0        
+            words = 0
         game.words = words
-        
+
         playtime = 0
         if form.playtime.data:
             try:
                 playtime = float(form.playtime.data)
-            except TypeError: 
+            except TypeError:
                 try:
                     playtime = int(re.search(r'(0|(-?[1-9][0-9]*))', form.playtime.data).group(0))
                 except TypeError: # Catch exception if re.search returns None
@@ -363,7 +363,7 @@ def edit_game(game_slug):
                 developer = Developer (developer_name, type, g.user.id, group_id=group.id)
             db.session.add(developer)
         game.developer_id = developer.id
-            
+
         #save homepage link to link_game table:
         li = LinkGame.query.filter_by(game_id=game.id).first()
         if not li.url==form.homepage_link_url.data:
@@ -380,7 +380,7 @@ def edit_game(game_slug):
             if not category in categories:
                 db.session.add(CategoryGame(category_id=category, game_id=game.id))
         db.session.commit()
-        
+
         flash('Release data was saved.')
         return redirect(url_for('game_details', game_slug=game_slug))
     else:
@@ -399,16 +399,16 @@ def edit_game(game_slug):
         else:
             form.creator_type.data = "group"
         form.creator.data = dev.name
-        
+
     developers = '['
     for developer in Developer.query.filter(Developer.id>0).order_by(Developer.type):
         developer.name = developer.name.replace("'", "")
         developers += '"'+developer.name+'",'
     developers = developers[:-1]
     developers += ']'
-    
+
     return render_template('add_game.html', navigation=return_navigation(), site_data=site_data(), form=form, developers=developers, edit=True)
-    
+
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
 def add_game():
@@ -422,14 +422,14 @@ def add_game():
     developers = developers[:-1]
     developers += ']'
     #creators = '["PunkCabbageRabbit","Akane","flowerthief","Lemma Soft","Zeiva Inc.","ATP Projects","Grey","American Bishoujo","Ren\'Ai Games","Chronoluminaire","Gloranor"]'
-    
+
     if form.validate_on_submit():
         game_title=form.game_title.data
         slug=form.slug.data
         homepage_link_url=form.homepage_link_url.data
         developer_name=form.creator.data
         maker=developer_name
-        creator_type=form.creator_type.data        
+        creator_type=form.creator_type.data
         description = form.description_.data
         age_rating_id=str(form.age_rating_id.data)
         categories = form.categories.data
@@ -442,23 +442,23 @@ def add_game():
             words = 0
         if not words:
             words = 0
-        
+
         playtime = 0
         if form.playtime.data:
             try:
                 playtime = float(form.playtime.data)
-            except TypeError: 
+            except TypeError:
                 try:
                     playtime = int(re.search(r'(0|(-?[1-9][0-9]*))', form.playtime.data).group(0))
                 except TypeError: # Catch exception if re.search returns None
                     playtime = 0
             if form.playtime_unit.data == 'hours':
                 playtime = playtime * 60
-                game.playtime = int(math.ceil(playtime))
+                playtime = int(math.ceil(playtime))
             else:
-                game.playtime = playtime
-            
-            
+                playtime = playtime
+
+
         if words == 0:
             words_estimate = playtime*200
         else:
@@ -540,7 +540,7 @@ def edit_release(game_slug="", release_id=""):
     error = None
     game = Game.query.filter(Game.slug==game_slug).one()
     release = db.session.query(Release).filter(Release.id==release_id).one()
-    
+
     if form.validate_on_submit():
         release.release_date = form.release_date.data
         release.release_version = form.release_version.data
@@ -555,7 +555,7 @@ def edit_release(game_slug="", release_id=""):
             platforms.append(platform.platform_id)
         for platform in form.platforms.data:
             if not platform in platforms:
-                db.session.add(PlatformRelease(release_id=release.id, platform_id=platform))        
+                db.session.add(PlatformRelease(release_id=release.id, platform_id=platform))
         db.session.commit()
         flash('Release data was saved.')
         return redirect(url_for('game_details', game_slug=game_slug))
@@ -565,13 +565,13 @@ def edit_release(game_slug="", release_id=""):
         form.engine_id.data = release.engine_id
         form.release_description.data = release.release_description
         form.engine_version.data = release.engine_version
-        
+
         form.platforms.data = []
         for platform in release.platforms:
             form.platforms.data.append(platform.platform_id)
     return render_template('add_release.html', game=game, navigation=return_navigation(), error=error, site_data=site_data(), form=form)
 
-    
+
 @app.route('/add/<game_slug>/screenshot', methods=['GET', 'POST'])
 @login_required
 def add_screenshot(game_slug=''):
@@ -627,7 +627,7 @@ def resize_image(filename, game_slug):
                 im.thumbnail(size1, Image.ANTIALIAS)
                 bg = Image.new('RGBA', size, (255, 255, 255, 0))
                 bg.paste(im,((size[0] - im.size[0]) / 2, (size[1] - im.size[1]) / 2))
-                
+
                 if do_resize:
                     bg.save(outfile, "JPEG")
                 else:
@@ -664,9 +664,9 @@ def login():
         session['remember_me'] = formoid.remember_me.data
         return oid.try_login(formoid.openid.data, ask_for = ['nickname', 'email'])
     if form.validate_on_submit():
-        
+
         #password = md5.md5(form.password.data).hexdigest()
-        
+
         user = UserAccount.query.filter(UserAccount.username==form.username.data).first()
         salt = user.password.split('$')
         salt = salt[1]
@@ -702,7 +702,7 @@ def after_login(resp):
     flash("Logged in successfully.")
     login_user(user, remember = remember_me)
     return redirect(request.args.get('next') or url_for('index'))
-	
+
 @app.route('/account/logout/')
 def logout():
     logout_user()
@@ -762,7 +762,7 @@ def new_password():
         flash('Password has been changed.')
         return redirect(url_for('login'))
     return render_template('new_password.html', form=form, error=error, help_email=ADMINS[0], navigation=return_navigation(), site_data=site_data())
-    
+
 @app.errorhandler(404)
 def internal_error(error):
     return render_template('404.html', site_data=site_data()), 404
@@ -777,7 +777,7 @@ def internal_error(error):
 def upload_file(game_slug):
     release_id = request.args.get('release', None)
     file_id = request.args.get('file', None)
-    
+
     if file_id:
         file = db.session.query(File).filter(File.id==file_id).one()
         form = UploadForm()
@@ -814,7 +814,7 @@ def upload_file(game_slug):
     else:
         if form.edit.data:
             form.description.data=file.description
-        
+
     return render_template('add_file.html', form=form, site_data=site_data(), navigation=return_navigation())
 
 @app.route('/account/settings/', methods=['GET', 'POST'])
@@ -837,13 +837,13 @@ def account_settings():
     if request.method == 'POST' and formpass.submit_pass:
         sel_tab = 2
     if formpass.validate_on_submit():
-        
-        password = md5.md5(formpass.password.data).hexdigest()    
+
+        password = md5.md5(formpass.password.data).hexdigest()
         user1 = UserAccount.query.filter(and_(UserAccount.id==g.user.id, UserAccount.password==password)).first()
         if not user1:
             error = 'Invalid  password.'
         else:
-            newpassword = md5.md5(formpass.newpassword.data).hexdigest()    
+            newpassword = md5.md5(formpass.newpassword.data).hexdigest()
             user1.password = newpassword
             db.session.add(user1)
             db.session.commit()
@@ -865,7 +865,7 @@ def change_domain_testing(domain_id):
     if str(domain_id)==str(RENPY_LIST_ID):
         session['DOMAIN_ID']=str(RENPY_LIST_ID)
         flash ('Domain changed.')
-    if str(domain_id)==str(0):    
+    if str(domain_id)==str(0):
         session.pop('DOMAIN_ID', None)
         flash ('Domain restored.')
     screenshots = ''
@@ -919,10 +919,10 @@ def set_thumbnail(slug, id):
         screenshot.is_thumb = False
     screenshot = Screenshot.query.filter_by(id=id).first()
     screenshot.is_thumb = True
-    
+
     db.session.commit()
     return redirect(url_for('add_screenshot', game_slug=slug))
-    
+
 # @app.route('/getvndb/<slug>')
 # def get_vndb(slug):
     ##http://thomasfischer.biz/?p=622
@@ -940,7 +940,7 @@ def set_thumbnail(slug, id):
     # data = "login " + json.dumps(data) + "\x04"
     # s.send(data)
     # print "data sent"
-    
+
     # data_rec = s.recv(1024)
     # print "data received"
     # print data_rec
@@ -955,7 +955,6 @@ def set_thumbnail(slug, id):
     # if num > 0:
         # exists=True
     # else:
-        # exists=False    
+        # exists=False
     # return render_template('vndb.html', exists=exists, game=game, site_data=site_data(), navigation=return_navigation(), error=error)
 
-    
