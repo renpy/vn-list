@@ -171,7 +171,7 @@ try:
             cur3.execute("SELECT * FROM games_file WHERE release_id=" + str(rel[0]))
             game_files = cur3.fetchall()
             for games_file in game_files:
-                file = models.File(release_id=release.id, filename=games_file[3], description=games_file[4], approved=games_file[2])
+                file = models.File(release_id=release.id, filename=games_file[3][6:], description=games_file[4], approved=games_file[2])
                 db.session.add(file)
                 #db.session.commit()
         
