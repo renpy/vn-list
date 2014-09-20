@@ -38,34 +38,39 @@
 </div>
 {% endif %}
 
-<form method="post" class="form-horizontal">
+<form method="post" class="form-horizontal" role="form">
 	{{ form.hidden_tag() }}
-  <div class="control-group {% if form.game_title.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.game_title.id }}">{{ form.game_title.label }}</label>
-    <div class="controls">			
-			<input class="input-xlarge" id="focusedInput" name="{{ form.game_title.name }}" type="text" value="{{ form.game_title.data }}" autofocus>
-			{% if form.game_title.errors %}<span class="help-inline">{% for error in form.game_title.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>{% endif %}
-			<span class="help-block">{{ form.game_title.description }}</span>
+    
+    
+    <div class="form-group{% if form.game_title.errors %} error{% endif %}">
+{#        <label class="control-label pull-left" for="{{ form.game_title.id }}">{{ form.game_title.label }}</label>#}
+        <label class="control-label" for="focusedInput">{{ form.game_title.label }}</label>
+        <br/>
+        <div class="col-md-4">
+            <input class="form-control" id="focusedInput" name="{{ form.game_title.name }}" type="text" value="{{ form.game_title.data }}" autofocus>
+            {% if form.game_title.errors %}<span class="help-inline">{% for error in form.game_title.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>{% endif %}
+            <span class="help-block">{{ form.game_title.description }}</span>
+        </div>
     </div>
-  </div>	
 	
 {% if not edit %}
-  <div class="control-group {% if form.slug.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.slug.id }}">{{ form.slug.label }}</label>
-    <div class="controls">			
-			{{ form.slug(placeholder="the-game-title") }}
-				{% if form.slug.errors %}
-					<span class="help-inline">{% for error in form.slug.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
-				{% endif %}
-			<span class="help-block">{{ form.slug.description }}</span>			
+    <div class="form-group {% if form.slug.errors %}error{% endif %}">
+        <label class="control-label xpull-left" for="{{ form.slug.id }}">{{ form.slug.label }}</label>
+        <br/>
+        <div class="col-md-4">			
+            {{ form.slug(placeholder="the-game-title", class="form-control") }}
+            {% if form.slug.errors %}
+                <span class="help-inline">{% for error in form.slug.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+            {% endif %}
+            <span class="help-block">{{ form.slug.description }}</span>
+        </div>
     </div>
-  </div>
 {% endif %}
 
-  <div class="control-group {% if form.homepage_link_url.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.homepage_link_url.id }}">{{ form.homepage_link_url.label }}</label>
-    <div class="controls">			
-			{{ form.homepage_link_url }}
+  <div class="form-group {% if form.homepage_link_url.errors %}error{% endif %}">
+    <label class="control-label pull-left" for="{{ form.homepage_link_url.id }}">{{ form.homepage_link_url.label }}</label>
+    <div class="col-md-4">			
+			{{ form.homepage_link_url(class="form-control") }}
 				{% if form.homepage_link_url.errors %}
 					<span class="help-inline">{% for error in form.homepage_link_url.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
 				{% endif %}
@@ -73,10 +78,12 @@
     </div>
   </div>
 	
-  <div class="control-group {% if form.creator.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.creator.id }}">{{ form.creator.label }}</label>
-    <div class="controls">			
-			<input id="{{ form.creator.id }}" name="{{ form.creator.name }}" type="text" value="{{ form.creator.data }}" autocomplete="off" data-provide="typeahead" data-items="10" data-source='{{ developers|safe }}' >
+  <div class="form-group {% if form.creator.errors %}error{% endif %}">
+    <label class="control-label pull-left" for="{{ form.creator.id }}">{{ form.creator.label }}</label>
+    <div class="col-md-4" id="developers">
+			{# <input id="{{ form.creator.id }}" class="typeahead" name="{{ form.creator.name }}" type="text" value="{{ form.creator.data }}" autocomplete="off" data-provide="typeahead" data-items="10" data-source='{{ developers|safe }}' > #}
+            <input id="{{ form.creator.id }}" class="typeahead" name="{{ form.creator.name }}" type="text" >
+            
 			{% for subfield in form.creator_type %}
       <label class="radio inline">
         {{ subfield }} {{ subfield.label }}
@@ -88,12 +95,11 @@
 			<span class="help-block">{{ form.creator.description }}</span>			
     </div>
   </div>
-	
 
-  <div class="control-group {% if form.description_.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.description_.id }}">{{ form.description_.label }}</label>
-    <div class="controls">			
-			{{ form.description_(class="input-xxlarge", rows="12") }}
+  <div class="form-group {% if form.description_.errors %}error{% endif %}">
+    <label class="control-label pull-left" for="{{ form.description_.id }}">{{ form.description_.label }}</label>
+    <div class="col-md-4">			
+			{{ form.description_(class="form-control", rows="12") }}
 				{% if form.description_.errors %}
 					<span class="help-inline">{% for error in form.description_.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
 				{% endif %}
@@ -101,27 +107,27 @@
     </div>
   </div>
 
-  <div class="control-group {% if form.age_rating_id.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.age_rating_id.id }}">{{ form.age_rating_id.label }}</label>
-    <div class="controls">
-			{% for subfield in form.age_rating_id %}
-      <label class="radio inline">
-        {{ subfield }} {{ subfield.label }}
-			</label>
-			{% endfor %}
-				{% if form.age_rating_id.errors %}
-					<span class="help-inline">{% for error in form.age_rating_id.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
-				{% endif %}
+    <div class="form-group {% if form.age_rating_id.errors %}error{% endif %}">
+        <label class="control-label pull-left" for="{{ form.age_rating_id.id }}">{{ form.age_rating_id.label }}</label>
+        <div class="col-md-4">
+            {% for subfield in form.age_rating_id %}
+                <label class="radio-inline">
+                    {{ subfield }} {{ subfield.label }}
+                </label>
+            {% endfor %}
+            {% if form.age_rating_id.errors %}
+                <span class="help-inline">{% for error in form.age_rating_id.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+            {% endif %}
+        </div>
+        <span class="help-block">{{ form.age_rating_id.description|safe }}</span>				
     </div>
-		<span class="help-block">{{ form.age_rating_id.description|safe }}</span>				
-  </div>
 
 
-  <div class="control-group {% if form.categories.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.categories.id }}">{{ form.categories.label }}</label>
-    <div class="controls">
+  <div class="form-group {% if form.categories.errors %}error{% endif %}">
+    <label class="control-label pull-left" for="{{ form.categories.id }}">{{ form.categories.label }}</label>
+    <div class="col-md-4">
 			{% for subfield in form.categories %}
-      <label class="checkbox inline" style="width: 140px;">
+      <label class="checkbox-inline" style="width: 140px;">
         {{ subfield }} {{ subfield.label }}
 			</label>
 			{% endfor %}
@@ -133,10 +139,10 @@
   </div>
 
 	
-  <div class="control-group {% if form.words.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.words.id }}">{{ form.words.label }}</label>
-    <div class="controls">			
-			{{ form.words(class="input-small") }}
+  <div class="form-group {% if form.words.errors %}error{% endif %}">
+    <label class="control-label pull-left" for="{{ form.words.id }}">{{ form.words.label }}</label>
+    <div class="col-md-2">			
+			{{ form.words(class="form-control") }}
 				{% if form.words.errors %}
 					<span class="help-inline">{% for error in form.words.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
 				{% endif %}
@@ -144,12 +150,12 @@
     </div>
   </div>
 
-  <div class="control-group {% if form.playtime.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.playtime.id }}">{{ form.playtime.label }}</label>
-    <div class="controls">			
-			{{ form.playtime(class="input-small") }}
+  <div class="form-group {% if form.playtime.errors %}error{% endif %}">
+    <label class="control-label pull-left" for="{{ form.playtime.id }}">{{ form.playtime.label }}</label>
+    <div class="col-md-2">			
+			{{ form.playtime(class="form-control") }}
 			{% for subfield in form.playtime_unit %}
-      <label class="radio inline">
+      <label class="radio-inline">
       
       
         {{ subfield(onclick="changeHoursMins()") }} {{ subfield.label }}
@@ -166,12 +172,12 @@
 	
 {% if not edit %}
 {% include 'release_form.html' %}
-{{ form.release_description }}
+{{ form.release_description(class="form-control") }}
 
 
-	<div class="control-group {% if form.playtime.errors %}error{% endif %}">
-		<label class="control-label" for="{{ form.listed_on.id }}">{{ form.listed_on.label }}</label>
-		<div class="controls">
+	<div class="form-group {% if form.playtime.errors %}error{% endif %}">
+		<label class="control-label pull-left" for="{{ form.listed_on.id }}">{{ form.listed_on.label }}</label>
+		<div class="col-md-4">
 			<label class="checkbox">{{ form.listed_on }} Yes</label>
 				{% if form.listed_on.errors %}
 					<span class="help-inline">{% for error in form.listed_on.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
@@ -186,5 +192,7 @@
   </div>
 </form>
 
+<script type="text/javascript" src="/static/js/typeahead.js"></script>
+<script type="text/javascript" src="/static/js/typeahead.developers.js"></script>
 
 {% endblock %}
