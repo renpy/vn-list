@@ -235,4 +235,73 @@ font-size: 62.5%; font-family: Helvetica, Arial, sans-serif; line-height: 10%;}
   overflow-y: auto;
 }
 /*typeahead END*/
+
+
+@media(min-width:768px) {
+    .navbar-fixed-top {
+        padding: 15px 0;
+        -webkit-transition: padding .3s;
+        -moz-transition: padding .3s;
+        transition: padding .3s;
+    }
+
+    .navbar-fixed-top .navbar-brand {
+        font-size: 3em;
+        -webkit-transition: all .3s;
+        -moz-transition: all .3s;
+        transition: all .3s;
+    }
+
+    .navbar-fixed-top.navbar-shrink {
+        padding: 0px 0;
+    }
+
+    .navbar-fixed-top.navbar-shrink .navbar-brand {
+        font-size: 1.5em;
+    }
     
+    
+}
+
+
+body {
+    padding-top: 110px;
+    padding-bottom: 20px;
+}
+
+body p {
+    font-size: 16px;
+}
+
+.sidebar-nav {
+    padding: 9px 0;
+}
+
+.popover {
+    max-width: 300px;
+    max-height: 350px;
+    overflow: hidden;
+    
+    height: 350px;
+    width: 300px;
+    
+    
+    text-overflow: ellipsis;
+    {# width: auto; #}
+}
+
+.tooltip-inner {
+    text-align: left;
+    padding-right: 40px;
+    padding-left: 10px;
+}
+
+  @media (max-width: 980px) {
+    /* Enable use of floated navbar text */
+    .navbar-text.pull-right {
+      float: none;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  }
+  

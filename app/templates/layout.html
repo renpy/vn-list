@@ -11,9 +11,8 @@
     
     {# <link href="/static/bak/bootstrap.min.css" rel="stylesheet"> #}
     
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet"> 
-    
-    {# <link href="/static/css/bootstrap-responsive.css" rel="stylesheet"> #}
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">   
     <link href="/static/css/style_more.css" rel="stylesheet">
     <link href="/static/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/fancybox/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen" />
@@ -29,44 +28,6 @@
 {% else %}
     <link rel="shortcut icon" href="/static/favrenai.ico">
 {% endif %}
-
-    <style type="text/css">    
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      body p {
-        font-size: 16px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-      .popover {
-        max-width: 300px;
-        {# width: auto; #}
-        max-height: 350px;
-        overflow: hidden;
-      }
-      .tooltip-inner {
-        xwhite-space: nowrap;
-        text-align: left;
-        padding-right: 40px;
-        padding-left: 10px;
-      }
-
-
-      @media (max-width: 980px) {
-        /* Enable use of floated navbar text */
-        .navbar-text.pull-right {
-          float: none;
-          padding-left: 5px;
-          padding-right: 5px;
-        }
-      }
-      
-      
-            
-    </style>
 
 {# TO DO: need html5shiv.js #}
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -116,6 +77,8 @@
 {#		<script type="text/javascript" src="/static/fancybox/helpers/jquery.fancybox-thumbs.js"></script> #}
 	
     <script src="/static/jquery-ui-1.10.3.custom.min.js"></script>
+    
+    <script type="text/javascript" src="/static/js/animated.header.js"></script>
     
 {# TO DO: include only on add_game: #}    
 {% if developers %}

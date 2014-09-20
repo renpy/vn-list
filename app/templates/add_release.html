@@ -10,23 +10,24 @@
 {% endif %}
 
 <form method="post" class="form-horizontal">
-  {{ form.hidden_tag() }}
-  {% include 'release_form.html' %}
+    {{ form.hidden_tag() }}
+    {% include 'release_form.html' %}
 
-  <div class="control-group {% if form.release_description.errors %}error{% endif %}">
-    <label class="control-label" for="{{ form.release_description.id }}">{{ form.release_description.label }}</label>
-    <div class="controls">			
-			{{ form.release_description(class="input-xxlarge", rows="3") }}
-				{% if form.release_description.errors %}
-					<span class="help-inline">{% for error in form.release_description.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
-				{% endif %}
-			<span class="help-block">{{ form.release_description.description }}</span>			
+    <div class="form-group{% if form.release_description.errors %} has-error{% endif %}">
+        <label class="control-label col-md-4" for="{{ form.release_description.id }}">{{ form.release_description.label }}</label>
+        <div class="col-md-4">
+        {{ form.release_description(class="form-control", rows="3") }}
+        </div>
+            {% if form.release_description.errors %}
+                <span class="help-inline  text-danger">{% for error in form.release_description.errors %}<strong>{{ error }}</strong><br />{% endfor %}</span>
+            {% endif %}
+        <div class="col-md-4"><span class="help-block">{{ form.release_description.description }}</span></div>
     </div>
-  </div>
 
-  <div class="form-actions">
-    <button type="submit" class="btn btn-primary">Add Release</button>
-  </div>
+    <div class="form-actions">
+        <div class="col-md-4"></div>
+        <button type="submit" class="btn btn-primary">Add Release</button>
+    </div>
 </form>
 
 {% endblock %}
