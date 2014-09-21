@@ -81,14 +81,15 @@
     <script type="text/javascript" src="/static/js/animated.header.js"></script>
     
 {# included only on add_game: #}
-{% if developers %}
+{% if developers is defined %}
 <script type="text/javascript" src="/static/js/typeahead.js"></script>
 <script type="text/javascript">
     var developers = {{ developers|safe }};
 </script>
 <script type="text/javascript" src="/static/js/typeahead.developers.js"></script>
 {% endif %}
-{% if form.slug.id %}
+{% if form is defined %}
+{% if form.slug.id is defined %}
 <script type="text/javascript">
 $(function() {
     $('input#focusedInput').keyup(function() {
@@ -96,7 +97,9 @@ $(function() {
     });
 });
 </script>
-{% endif %}        
+{% endif %}
+{% endif %}
+
 		<script type="text/javascript">
 			$('.carousel').carousel({
 						interval: 7000
