@@ -27,10 +27,17 @@
 
         <div>
             {% if g.user.role==1 or g.user.role==2 %}
+                <script>
+                function deleteConfirm{{ screenshot.id }}() {
+                    if (confirm("Delete this screenshot?") == true) {
+                        window.location.href = "{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}";
+                    }
+                }
+                </script>
                 {% if screenshot.filename[:11]=="screenshot/" %}
-                    <a href="{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}" class="btn btn-danger">Delete</a>
+                    <a href="#" onclick="deleteConfirm{{ screenshot.id }}()" class="btn btn-danger">Delete</a>
                 {% else %}
-                    <a href="{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}" class="btn btn-danger">Delete</a>
+                    <a href="#" onclick="deleteConfirm{{ screenshot.id }}()" class="btn btn-danger">Delete</a>
                 {% endif %}
                 
                 <form action="{{ url_for('set_thumbnail', slug=game.slug, id=screenshot.id) }}" method="post">

@@ -931,6 +931,27 @@ def set_thumbnail(slug, id):
     db.session.commit()
     return redirect(url_for('add_screenshot', game_slug=slug))
 
+@app.route('/delete_release/<slug>/<id>')
+def delete_release(slug, id):
+    release = Release.query.filter_by(id=id).first()
+    for file in release.files:
+        file = File.query.filter_by(id=file.id).first()
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        db.session.delete(file)
+    db.session.delete(release)
+    db.session.commit()
+    return redirect(url_for('game_details', game_slug=slug))
+
+@app.route('/delete_game/<slug>')
+def delete_game(slug):
+    game = Game.query.filter_by(slug=slug).first()
+    for release in game.releases:
+        delete_release(slug, release.id)
+    db.session.delete(game)
+    db.session.commit()
+    return redirect(url_for('/'))
+    
+    
 # @app.route('/getvndb/<slug>')
 # def get_vndb(slug):
     ##http://thomasfischer.biz/?p=622

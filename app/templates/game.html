@@ -5,6 +5,18 @@
   {% if game.user_id==g.user.id or g.user.role==1 or g.user.role==2 %}
     <a class="btn btn-default" href="{{ url_for('edit_game',game_slug=game.slug) }}">Edit Game</a>
   {% endif %}
+  
+    {% if g.user.role==1 or g.user.role==2 %}
+        <script>
+        function deleteGameConfirm{{ game.id }}() {
+            if (confirm("Delete game \"{{ game.game_title }}\"?") == true) {
+                window.location.href = "{{ url_for('delete_game',slug=game.slug) }}";
+            }
+        }
+        </script>
+        <a href="#" onclick="deleteGameConfirm{{ game.id }}()" class="btn btn-danger">Delete Game</a>
+    {% endif %}
+  
   <a class="btn btn-default" href="{{ url_for('add_release',game_slug=game.slug) }}">Add a Release</a>
   <a class="btn btn-default" href="{{ url_for('add_screenshot',game_slug=game.slug) }}">Add Screenshot</a>
 </div>
@@ -93,7 +105,19 @@
 
     </p>
     
-    <p>{% if game.user_id==g.user.id or  g.user.role==1 or g.user.role==2 %}<a class="btn btn-default btn-sm" href="{{ url_for('edit_release',game_slug=game.slug, release_id=release.id) }}">Edit this release</a>{% endif %} {% if not release.approved %}{% if g.user.role==1 or g.user.role==2 %}<a class="btn btn-xs" href="{{ url_for('approve_release', id=release.id, slug=game.slug) }}">Approve</a>{% endif %}{% endif %}</p>
+    <p>{% if game.user_id==g.user.id or g.user.role==1 or g.user.role==2 %}<a class="btn btn-default btn-sm" href="{{ url_for('edit_release',game_slug=game.slug, release_id=release.id) }}">Edit this release</a>{% endif %} {% if not release.approved %}{% if g.user.role==1 or g.user.role==2 %}<a class="btn btn-default btn-xs" href="{{ url_for('approve_release', id=release.id, slug=game.slug) }}">Approve</a>
+    {% endif %}{% endif %}
+    {% if g.user.role==1 or g.user.role==2 %}
+        <script>
+        function deleteReleaseConfirm{{ release.id }}() {
+            if (confirm("Delete release {{ release.release_version }}?") == true) {
+                window.location.href = "{{ url_for('delete_release',slug=game.slug,id=release.id) }}";
+            }
+        }
+        </script>
+        <a href="#" onclick="deleteReleaseConfirm{{ release.id }}()" class="btn btn-danger">Delete Release</a>
+    {% endif %}
+    </p>
 
     {% if release.files %}
     <div class="well">

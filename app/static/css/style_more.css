@@ -222,34 +222,6 @@ font-size: 62.5%; font-family: Helvetica, Arial, sans-serif; line-height: 10%;}
 }
 /*typeahead END*/
 
-
-@media(min-width:768px) {
-    .navbar-fixed-top {
-        padding: 15px 0;
-        -webkit-transition: padding .3s;
-        -moz-transition: padding .3s;
-        transition: padding .3s;
-    }
-
-    .navbar-fixed-top .navbar-brand {
-        font-size: 3em;
-        -webkit-transition: all .3s;
-        -moz-transition: all .3s;
-        transition: all .3s;
-    }
-
-    .navbar-fixed-top.navbar-shrink {
-        padding: 0px 0;
-    }
-
-    .navbar-fixed-top.navbar-shrink .navbar-brand {
-        font-size: 1.5em;
-    }
-    
-    
-}
-
-
 body {
     padding-top: 110px;
     padding-bottom: 20px;
