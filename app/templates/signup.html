@@ -10,32 +10,33 @@
 
   <form class="form-horizontal" action="{{ url_for('signup') }}" method="post" name="signup">
   {{form.hidden_tag()}}
-  <div class="control-group">
-    <label class="control-label" for="{{form.username.id}}">Username</label>
-    <div class="controls">
-      {{form.username(placeholder="Username")}}
+  <div class="form-group">
+    <label class="control-label col-md-2" for="{{form.username.id}}">Username</label>
+    <div class="col-md-2">
+      {{form.username(placeholder="Username", class="form-control")}}
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="{{form.password.id}}">Password</label>
-    <div class="controls">
- 		  {{form.password(placeholder="Password")}}
+  <div class="form-group">
+    <label class="control-label col-md-2" for="{{form.password.id}}">Password</label>
+    <div class="col-md-2">
+ 		  {{form.password(placeholder="Password", class="form-control")}}
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="{{form.email.id}}">Email (optional)</label>
-    <div class="controls">
-  		{{form.email(placeholder="Email")}}
+  <div class="form-group">
+    <label class="control-label col-md-2" for="{{form.email.id}}">Email (optional)</label>
+    <div class="col-md-2">
+  		{{form.email(placeholder="Email", class="form-control")}}
     </div>
   </div>
 
-  <div class="control-group">
-    <div class="controls">
+  <div class="form-group">
+    <div class="col-md-2"></div>
 	  {# <p>By clicking "Sign Up", you are indicating that you have read and agree to the Terms of Use and Privacy Policy.</p> #}
       <button type="submit" class="btn btn-default">Sign Up</button>
     </div>
   </div>
 </form>
+
 <p>If you have any trouble logging in to your account, contact us at <a href="{{ help_email }}">{{ help_email }}</a>.</p>
   
 {% endblock %}
