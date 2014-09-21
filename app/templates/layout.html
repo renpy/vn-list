@@ -80,7 +80,7 @@
     
     <script type="text/javascript" src="/static/js/animated.header.js"></script>
     
-{# TO DO: include only on add_game: #}    
+{# included only on add_game: #}
 {% if developers %}
 <script type="text/javascript" src="/static/js/typeahead.js"></script>
 <script type="text/javascript">
@@ -88,7 +88,15 @@
 </script>
 <script type="text/javascript" src="/static/js/typeahead.developers.js"></script>
 {% endif %}
-        
+{% if form.slug.id %}
+<script type="text/javascript">
+$(function() {
+    $('input#focusedInput').keyup(function() {
+        $('#{{ form.slug.id }}').val(this.value.replace(/[^a-zA-Z0-9\- ]/g, '').replace(/ /g, '-').toLowerCase())
+    });
+});
+</script>
+{% endif %}        
 		<script type="text/javascript">
 			$('.carousel').carousel({
 						interval: 7000

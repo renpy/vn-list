@@ -40,8 +40,7 @@
 
 <form method="post" class="form-horizontal" role="form">
 	{{ form.hidden_tag() }}
-    
-    
+   
     <div class="form-group {% if form.game_title.errors %} has-error has-feedback{% endif %}">
         <label class="control-label col-md-4" for="focusedInput">{{ form.game_title.label }}</label>       
         <div class="col-md-4">
@@ -51,7 +50,7 @@
         {% if form.game_title.errors %}<span class="help-inline text-danger">{% for error in form.game_title.errors %}<strong><span class="glyphicon glyphicon-asterisk"></span> {{ error }}</strong><br />{% endfor %}</span>{% endif %}
         <div class="col-md-4"><span class="help-block">{{ form.game_title.description }}</span></div>
     </div>
-	
+
 {% if not edit %}
     <div class="form-group {% if form.slug.errors %} has-error has-feedback{% endif %}">
         <label class="control-label col-md-4" for="{{ form.slug.id }}">{{ form.slug.label }}</label>
