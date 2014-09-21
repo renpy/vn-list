@@ -13,6 +13,7 @@
     
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">   
+    <link href="/static/css/simple-sidebar.css" rel="stylesheet">
     <link href="/static/css/style_more.css" rel="stylesheet">
     <link href="/static/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/fancybox/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen" />
@@ -40,12 +41,16 @@
   </head>
 
   
-<body>  
+<body>
+    <div id="wrapper">
     {% include 'navigation_top.html' %}
+    
+ 		{% include 'navigation_side.html' %}
+<div id="page-content-wrapper">        
     <div class="container-fluid">
         <div class="row">
- 		{% include 'navigation_side.html' %} 
-        <div class="col-md-9">
+        
+        <div class="col-md-9" >
 
 		{% for message in get_flashed_messages() %}
           <div class="alert alert-info fade in">
@@ -64,7 +69,10 @@
         </footer>
 
     </div><!--/.fluid-container-->
+    </div>
+    </div>
 
+    
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -89,7 +97,7 @@
 <script type="text/javascript" src="/static/js/typeahead.developers.js"></script>
 {% endif %}
 {% if form is defined %}
-{% if form.slug.id is defined %}
+{% if form.slug is defined %}
 <script type="text/javascript">
 $(function() {
     $('input#focusedInput').keyup(function() {
@@ -99,6 +107,14 @@ $(function() {
 </script>
 {% endif %}
 {% endif %}
+
+    <!-- Sidebar Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
 
 		<script type="text/javascript">
 			$('.carousel').carousel({

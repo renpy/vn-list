@@ -157,20 +157,6 @@ font-size: 62.5%; font-family: Helvetica, Arial, sans-serif; line-height: 10%;}
     1px 1px 0 #000;  
 }
 
-#navigation_side ul li {
-    margin 0;
-}
-
-#navigation_side {
-    width: 230px;
-}
-
-.nav-list {
-    list-style-type: none;
-    margin 0;
-    padding: 0 0 0 15px;
-}
-
 .nav-header {
     font-size: 11px;
     font-weight: bold;
@@ -273,10 +259,6 @@ body p {
     font-size: 16px;
 }
 
-.sidebar-nav {
-    padding: 9px 0;
-}
-
 .popover {
     max-width: 300px;
     max-height: 350px;
@@ -291,9 +273,12 @@ body p {
 }
 
 .tooltip-inner {
-    text-align: left;
-    padding-right: 40px;
+/*    text-align: left;
+    padding-right: 10px;
     padding-left: 10px;
+    min-width: 100%;
+    white-space: nowrap;
+    width: 100%;*/
 }
 
   @media (max-width: 980px) {

@@ -25,7 +25,7 @@
 {# <a href="{{ url_for('developer_info', developer=game.developer_id) }}">{{ game.maker }}</a>  #}
 {% else %}
 {{ game.maker }} 
-{% endif %}{% if game.link.url %} &bull; <a href="{{ game.link.url }}" rel="tooltip" title="{{ game.link.url }}">{{ game.link.name }}</a>{% endif %}</h2>
+{% endif %}{% if game.link.url %} &bull; <a href="{{ game.link.url }}" rel="tooltip" style="white-space: nowrap;" title="{{ game.link.url }}">{{ game.link.name }}</a>{% endif %}</h2>
     
 <p>{{ game.description }}</p>
 
