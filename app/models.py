@@ -244,7 +244,7 @@ class Game(db.Model):
     playtime = db.Column(db.Integer)
     user_id = db.Column(db.Integer)
     age_rating_id = db.Column(db.Integer, db.ForeignKey('age_rating.id'))
-    approved  = db.Column(db.Boolean, default=False)
+    approved = db.Column(db.Boolean, default=False)
     maker = db.Column(db.String)
     developer_id = db.Column(db.Integer, db.ForeignKey('developer.id'))
     listed_on = db.Column(db.Integer, default=0)

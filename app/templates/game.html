@@ -2,11 +2,11 @@
 {% block body %}
 
 <div class="pull-right" style="margin-bottom: 10px;">
-  {% if game.user_id==g.user.id or g.user.role==1 or g.user.role==2 %}
-    <a class="btn btn-default" href="{{ url_for('edit_game',game_slug=game.slug) }}">Edit Game</a>
-  {% endif %}
-  
+    {% if game.user_id==g.user.id or g.user.role==1 or g.user.role==2 %}
+        <a class="btn btn-default" href="{{ url_for('edit_game',game_slug=game.slug) }}">Edit Game</a>
+    {% endif %}
     {% if g.user.role==1 or g.user.role==2 %}
+        {% if not game.approved %}<a class="btn btn-default" href="{{ url_for('approve_game', id=game.id, slug=game.slug) }}">Approve Game</a>{% endif %}
         <script>
         function deleteGameConfirm{{ game.id }}() {
             if (confirm("Delete game \"{{ game.game_title }}\"?") == true) {
@@ -15,23 +15,23 @@
         }
         </script>
         <a href="#" onclick="deleteGameConfirm{{ game.id }}()" class="btn btn-danger">Delete Game</a>
-    {% endif %}
-  
-  <a class="btn btn-default" href="{{ url_for('add_release',game_slug=game.slug) }}">Add a Release</a>
-  <a class="btn btn-default" href="{{ url_for('add_screenshot',game_slug=game.slug) }}">Add Screenshot</a>
+    {% endif %}  
+    <a class="btn btn-default" href="{{ url_for('add_release',game_slug=game.slug) }}">Add a Release</a>
+    <a class="btn btn-default" href="{{ url_for('add_screenshot',game_slug=game.slug) }}">Add Screenshot</a>
 </div>
+
 {% if game.age_rating.is_adult %}
 <div class="clearfix"></div>
-  <div class="alert alert-error">
-      This game may not be suitable for people under 18 years of age.
-  </div>
+    <div class="alert alert-danger">
+        This game may not be suitable for people under 18 years of age.
+    </div>
 {% endif %}
 {% if not game.approved %}
 <div class="clearfix"></div>
-  <div class="alert alert-error">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-      This game is not yet approved.
-  </div>
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        This game is not yet approved.
+    </div>
 {% endif %}
 
 <h1>{{ game.game_title }}</h1>
@@ -39,12 +39,13 @@
 
 {% if game.screenshots %}
 <div class="pull-right" style="margin-left: 15px;">
-      {% if game.screenshot.filename[:11]=="screenshot/" %}
-      <img class="thumbnail" src="http://renai.us/site_media/media/screenshot/small/{{ game.screenshot.filename[11:] }}"  xwidth="240" alt="{{ game.game_title }} thumbnail"/>
-      {% else %}
-      <img class="thumbnail" src="{{ url_for('image_small', filename=game.screenshot.filename) }}"  width="240" alt="{{ game.game_title }} thumbnail"/>
-      
-      {% endif %}
+    {% if game.screenshot.approved %}
+        {% if game.screenshot.filename[:11]=="screenshot/" %}
+            <img class="thumbnail" src="http://renai.us/site_media/media/screenshot/small/{{ game.screenshot.filename[11:] }}"  xwidth="240" alt="{{ game.game_title }} thumbnail"/>
+        {% else %}
+            <img class="thumbnail" src="{{ url_for('image_small', filename=game.screenshot.filename) }}"  width="240" alt="{{ game.game_title }} thumbnail"/>
+        {% endif %}
+    {% endif %}
 </div>
 {% endif %}
 
@@ -56,7 +57,7 @@
 {{ game.maker }} 
 {% endif %}
 
-{# <i class="icon-star"></i> #}
+{# <i class="-star"></i> #}
 {% if game.link.url %}&bull; <a href="{{ game.link.url }}" rel="author" data-toggle="tooltip" title="{{ game.link.url }}">{{ game.link.name }}</a>{% endif %} 
 </h2>
 <p style="margin-left: 20px;">{{ game.description }}</p>
@@ -87,15 +88,13 @@
 </p>
 
 <div class="clearfix"></div>
-{% if g.user.role==1 or g.user.role==2 %}
-{% if not game.approved %}<a class="btn btn-default btn-xs" href="{{ url_for('approve_game', id=game.id, slug=game.slug) }}">Approve</a>{% endif %}
-{% endif %}
+
 
 <div>
 <a id="releases"></a>
 {% for release in game.releases %}
 <h3>Release {{ release.release_version }}</h3>
-{% if not release.approved %}<p class="alert alert-error">This release is not yet approved.</p>{% endif %}
+{% if not release.approved %}<p class="alert alert-danger">This release is not yet approved.</p>{% endif %}
 <div style="margin-left: 20px;">
     <p>{{ release.release_description }}</p>
     <p>
@@ -105,7 +104,7 @@
 
     </p>
     
-    <p>{% if game.user_id==g.user.id or g.user.role==1 or g.user.role==2 %}<a class="btn btn-default btn-sm" href="{{ url_for('edit_release',game_slug=game.slug, release_id=release.id) }}">Edit this release</a>{% endif %} {% if not release.approved %}{% if g.user.role==1 or g.user.role==2 %}<a class="btn btn-default btn-xs" href="{{ url_for('approve_release', id=release.id, slug=game.slug) }}">Approve</a>
+    <p>{% if game.user_id==g.user.id or g.user.role==1 or g.user.role==2 %}<a class="btn btn-default btn-sm" href="{{ url_for('edit_release',game_slug=game.slug, release_id=release.id) }}">Edit this release</a>{% endif %} {% if not release.approved %}{% if g.user.role==1 or g.user.role==2 %}<a class="btn btn-default" href="{{ url_for('approve_release', id=release.id, slug=game.slug) }}">Approve Release</a>
     {% endif %}{% endif %}
     {% if g.user.role==1 or g.user.role==2 %}
         <script>
@@ -123,8 +122,8 @@
     <div class="well">
         <p><strong>Downloads:</strong><p/>
         {% for file in release.files %}
-        <p {% if not file.approved %}class="alert alert-error"{% endif %}>
-            <a href="{{ url_for('uploaded_file', filename=file.filename) }}"><i class="icon-download"></i> {{ file.filename }}</a> ({{ file.size }}) - {{ file.description }}{% if not file.approved %} - <strong>Unapproved</strong>{% endif %} {% if game.user_id==g.user.id or  g.user.role==1 or g.user.role==2 %}<a class="btn btn-default btn-xs" href="{{ url_for('upload_file', game_slug=game.slug) }}?release={{ release.id }}&file={{ file.id }}">Edit file</a>{% endif %}{% if g.user.role==1 or g.user.role==2 %}{% if not file.approved %}<a class="btn btn-default btn-xs" href="{{ url_for('approve_file', id=file.id, slug=game.slug) }}">Approve</a>{% endif %}{% endif %}
+        <p {% if not file.approved %}class="alert alert-danger"{% endif %}>
+            <a href="{{ url_for('uploaded_file', filename=file.filename) }}"><i class="glyphicon glyphicon-download"></i> {{ file.filename }}</a> ({{ file.size }}) - {{ file.description }}{% if not file.approved %} - <strong>Unapproved</strong>{% endif %} {% if game.user_id==g.user.id or  g.user.role==1 or g.user.role==2 %}<a class="btn btn-default btn-xs" href="{{ url_for('upload_file', game_slug=game.slug) }}?release={{ release.id }}&file={{ file.id }}">Edit file</a>{% endif %}{% if g.user.role==1 or g.user.role==2 %}{% if not file.approved %}<a class="btn btn-default btn-xs" href="{{ url_for('approve_file', id=file.id, slug=game.slug) }}">Approve</a>{% endif %}{% endif %}
             {% if g.user.role==1 or g.user.role==2 %}
             <a class="btn btn-danger btn-xs" href="{{ url_for('delete_file', slug=game.slug, id=file.id) }}">Delete file</a>
             {% endif %}
@@ -142,68 +141,41 @@
 </div>
 
 <div>
-<a id="screenshots"></a>
-{% if game.screenshots %}
-<h3>Screenshots</h3>
+    <a id="screenshots"></a>
+    {% if game.screenshots %}
+        <h3>Screenshots</h3>
+        <div class="imageRow">
+            <div class="set">
+            {% for screenshot in game.screenshots %}	  
+                <div class="single {% if loop.first %}first{% endif %}{% if loop.last %}last{% endif %}">
+                {% if loop.first and game.slug=='doppelganger' %}
+                <a class="fancybox" rel="gallery" href="http://www.youtube.com/watch?v=TxXxDUaN5w0">
+                <div style="position:relative">
+                  <div>
+                    <img src="http://img.youtube.com/vi/TxXxDUaN5w0/hqdefault.jpg" width="320">
+                  </div>
+                  <div style="position:absolute; left:98px; top:54px;">
+                        <img src="/static/play.png">
+                  </div>
+                </div>
+                </a>
+                {% endif %}
 
-  <div class="imageRow">
-  	<div class="set">
-{% for screenshot in game.screenshots %}	  
-      <div class="single {% if loop.first %}first{% endif %}{% if loop.last %}last{% endif %}">
-
-{% if loop.first and game.slug=='doppelganger' %}
-{# fancybox fancybox.iframe #}
-
-
-<a class="fancybox" rel="gallery" href="http://www.youtube.com/watch?v=TxXxDUaN5w0">
-<div style="position:relative">
-  <div>
-    <img src="http://img.youtube.com/vi/TxXxDUaN5w0/hqdefault.jpg" width="320">
-  </div>
-  <div style="position:absolute; left:98px; top:54px;">
-		<img src="/static/play.png">
-  </div>
+                {% if game.screenshot.approved %}
+                    {% if screenshot.filename[:11]=="screenshot/" %}
+                        <a class="fancybox" rel="gallery" href="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}"><img src="http://renai.us/site_media/media/screenshot/medium/{{ screenshot.filename[11:] }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
+                    {% else %}
+                        <a class="fancybox" rel="gallery" href="{{ url_for('image_normal', filename=screenshot.filename) }}"><img src="{{ url_for('image_medium', filename=screenshot.filename) }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
+                    {% endif %}
+                {% endif %}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 </div>
-</a>
-
-{% endif %}
-
-
-      {% if screenshot.filename[:11]=="screenshot/" %}
-<a class="fancybox" rel="gallery" href="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}"><img src="http://renai.us/site_media/media/screenshot/medium/{{ screenshot.filename[11:] }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
-      {% else %}
-
-<a class="fancybox" rel="gallery" href="{{ url_for('image_normal', filename=screenshot.filename) }}"><img src="{{ url_for('image_medium', filename=screenshot.filename) }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
-      {% endif %}
-      </div>
-{% endfor %}
-    </div>
-  </div>
-{% endif %}
-</div>
-
-
 
 <p class="alert alert-info">You can add new screenshots and new releases just by logging in. To update the game information, post a request <strong><a href="http://lemmasoft.renai.us/forums/viewtopic.php?f=4&t=6487">here.</a></strong></p>
-
-{#
-{% if g.user.role==1  or g.user.role==2 %}
-<h3>Admin Options</h3>
-  <form xclass="form-horizontal" method="post">
-	{{form.hidden_tag()}}
-  <div class="control-group">
-    <div class="controls">
-		<label class="radio inline" xstyle="width: 100px;">
-			{% for subfield in form.approved %}
-				{{ subfield }} {{ subfield.label }}
-			{% endfor %}
-		</label>
-    </div>
-  </div>
-	<button type="submit" class="btn btn-default">Save</button>
-</form>
-{% endif %}
-#}
 
 <div style="width: 400px; margin-left:auto; margin-right:auto;" class='shareaholic-canvas' data-shareaholic-widgets='share_buttons'></div>
 

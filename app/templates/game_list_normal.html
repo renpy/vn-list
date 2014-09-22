@@ -3,13 +3,15 @@
     <ul style="list-style-type: none;">
         <li class="col-md-12;">
             {% if game.screenshot %}
-                <a href="{{ url_for('game_details',game_slug=game.slug) }}">
-                    {% if game.screenshot.filename[:11]=="screenshot/" %}
-                        <img class="img-thumbnail" src="http://renai.us/site_media/media/screenshot/small/{{ game.screenshot.filename[11:] }}"  xwidth="240" alt="{{ game.game_title }} thumbnail"/>
-                    {% else %}
-                        <img class="img-thumbnail" src="{{ url_for('image_small', filename=game.screenshot.filename) }}"  width="240" alt="{{ game.game_title }} thumbnail"/>
-                    {% endif %}
-                </a>
+                {% if game.screenshot.approved %}
+                    <a href="{{ url_for('game_details',game_slug=game.slug) }}">
+                        {% if game.screenshot.filename[:11]=="screenshot/" %}
+                            <img class="img-thumbnail" src="http://renai.us/site_media/media/screenshot/small/{{ game.screenshot.filename[11:] }}"  xwidth="240" alt="{{ game.game_title }} thumbnail"/>
+                        {% else %}
+                            <img class="img-thumbnail" src="{{ url_for('image_small', filename=game.screenshot.filename) }}"  width="240" alt="{{ game.game_title }} thumbnail"/>
+                        {% endif %}
+                    </a>
+                {% endif %}
             {% endif %}
             <div style="padding: 5px; text-align: center;">
                 <a href="{{ url_for('game_details',game_slug=game.slug) }}" class="btn btn-info">More info and downloads</a>

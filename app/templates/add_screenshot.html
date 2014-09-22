@@ -27,6 +27,11 @@
 
         <div>
             {% if g.user.role==1 or g.user.role==2 %}
+            
+
+                {% if not screenshot.approved %}<a class="btn btn-default" href="{{ url_for('approve_screenshot', id=screenshot.id, slug=game.slug) }}">Approve</a>{% endif %}
+
+            
                 <script>
                 function deleteConfirm{{ screenshot.id }}() {
                     if (confirm("Delete this screenshot?") == true) {

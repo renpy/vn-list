@@ -141,7 +141,7 @@ def select_random_games(num):
     site_data_var=site_data()
     screenshots = Screenshot.query.join(Game)
     screenshots = screenshots.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==True))
-    screenshots = screenshots.filter(Screenshot.is_thumb==True)
+    screenshots = screenshots.filter(and_(Screenshot.is_thumb==True, Screenshot.approved==True))
     num_screenshots = screenshots.count() #in case there is less screenshots in the db than required
     if num > num_screenshots:
         num = num_screenshots
@@ -157,7 +157,6 @@ def select_random_games(num):
         res.playtime = game.playtime
         res.words = game.words
         res.age_rating = game.age_rating
-
 
         screenshots.append(res)
     return screenshots
@@ -379,6 +378,7 @@ def edit_game(game_slug):
         for category in form.categories.data:
             if not category in categories:
                 db.session.add(CategoryGame(category_id=category, game_id=game.id))
+        game.approved = False;
         db.session.commit()
 
         flash('Release data was saved.')
@@ -556,6 +556,7 @@ def edit_release(game_slug="", release_id=""):
         for platform in form.platforms.data:
             if not platform in platforms:
                 db.session.add(PlatformRelease(release_id=release.id, platform_id=platform))
+        release.approved = False;
         db.session.commit()
         flash('Release data was saved.')
         return redirect(url_for('game_details', game_slug=game_slug))
@@ -811,6 +812,7 @@ def upload_file(game_slug):
                 file = File(release_id=release_id, filename=filename, description=form.description.data)
                 db.session.add(file)
         if uploaded_file or form.edit.data:
+            file.approved = False;
             db.session.commit()
             if not form.edit.data:
                 form.description.data=None
@@ -928,6 +930,13 @@ def set_thumbnail(slug, id):
     screenshot = Screenshot.query.filter_by(id=id).first()
     screenshot.is_thumb = True
 
+    db.session.commit()
+    return redirect(url_for('add_screenshot', game_slug=slug))
+
+@app.route('/approve_screenshot/<slug>/<id>', methods=['GET', 'POST'])
+def approve_screenshot(slug, id):
+    screenshot = Screenshot.query.filter_by(id=id).first()
+    screenshot.approved = True
     db.session.commit()
     return redirect(url_for('add_screenshot', game_slug=slug))
 
