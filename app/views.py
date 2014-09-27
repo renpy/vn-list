@@ -617,7 +617,7 @@ def add_screenshot(game_slug=''):
     return render_template('add_screenshot.html', game=game, navigation=return_navigation(), is_thumb=is_thumb, site_data=site_data())
 
 def resize_image(filename, game_slug):
-    sizes = dict(
+    widths = dict(
         normal = app.config['IMAGE_SIZE_NORMAL'],
         small = app.config['IMAGE_SIZE_SMALL'],
         medium = app.config['IMAGE_SIZE_MEDIUM'],
@@ -627,38 +627,26 @@ def resize_image(filename, game_slug):
         normal = app.config['IMAGE_UPLOAD_FOLDER'],
         small = app.config['IMAGE_UPLOAD_FOLDER_SMALL'],
         medium = app.config['IMAGE_UPLOAD_FOLDER_MEDIUM'],
-        original = app.config['IMAGE_UPLOAD_FOLDER_ORIGINAL'],
         )
 
-    for s in ['original', 'small', 'medium', 'normal', ]:
-        infile = dirs['normal'] + '/' + filename
-        size = sizes[s]
+    infile = dirs['normal'] + '/' + filename
+    shutil.copy(infile, os.path.join(app.config['IMAGE_UPLOAD_FOLDER_ORIGINAL'], filename))
 
-        do_resize = (s != 'original')
+    outfilename = os.path.splitext(filename)[0] + ".jpg"
 
-        if do_resize:
-            outfilename = os.path.splitext(filename)[0] + ".jpg"
-        else:
-            outfilename = filename
+    for s in ['small', 'medium', 'normal', ]:
+
         outfile = dirs[s] + '/' + outfilename
-        if infile != outfile:
-            if do_resize:
-                im = Image.open(infile)
-                width, height = im.size
-                size1 = size
-                if width<size[0]:
-                    #size[0]=width
-                    size1 = (width, size[1])
-                im.thumbnail(size1, Image.ANTIALIAS)
-                bg = Image.new('RGBA', size, (255, 255, 255, 0))
-                bg.paste(im,((size[0] - im.size[0]) / 2, (size[1] - im.size[1]) / 2))
 
-                if do_resize:
-                    bg.save(outfile, "JPEG")
-                else:
-                    im.save(outfile)
-            else:
-                shutil.copy(infile, outfile)
+        im = Image.open(infile)
+        old_width, old_height = im.size
+
+        new_width = widths[s]
+        new_height = int(old_height * new_width / old_width)
+
+        im2 = im.resize((new_width, new_height), Image.ANTIALIAS)
+        im2.save(outfile, "JPEG")
+
     return outfilename
 
 def uploaded_file(filename):
@@ -676,6 +664,10 @@ app.add_url_rule(app.config['IMAGE_UPLOAD_URL_MEDIUM']+'<filename>', 'image_medi
 def image_small(filename):
     return send_from_directory(app.config['IMAGE_UPLOAD_FOLDER_SMALL'], filename)
 app.add_url_rule(app.config['IMAGE_UPLOAD_URL_SMALL']+'<filename>', 'image_small', image_small)
+
+def image_original(filename):
+    return send_from_directory(app.config['IMAGE_UPLOAD_FOLDER_ORIGINAL'], filename)
+app.add_url_rule(app.config['IMAGE_UPLOAD_URL_ORIGINAL']+'<filename>', 'image_original', image_original)
 
 @app.route('/account/login/', methods=['GET', 'POST'])
 @oid.loginhandler
