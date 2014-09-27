@@ -7,17 +7,17 @@ import psycopg2, sys
 con = None
 try:
     print "Importing games."
-    con = psycopg2.connect(database='renaius', user='postgres') 
+    con = psycopg2.connect(database='renaius', user='postgres')
     cur = con.cursor()
     cur.execute('SELECT * FROM games_game')
     rows = cur.fetchall()
     i = 1
-    
+
     #rows = []
-    
+
     for game in rows:
         # print game
-    
+
     #print game
 
         approved=game[0]
@@ -46,8 +46,8 @@ try:
         words=game[10]
         #words_estimate=...
         words_estimate=words
-        
-        
+
+
         default_screenshot_id=game[11]
         release_date=game[12]
         renaius=game[13]
@@ -55,7 +55,7 @@ try:
         if renaius:
             listed_on=3 #both
         renpy_release_date=game[14]
-     
+
         #user_id for game
         cur2 = con.cursor()
         cur2.execute("SELECT * FROM games_game_owner WHERE game_id='" + temp_tag + "'")
@@ -75,13 +75,14 @@ try:
             is_thumb=False
             if default_screenshot_id==scr[0]:
                 is_thumb=True
+
             new_filename = scr[3][11:]
             import os
             new_filename, fileExtension = os.path.splitext(new_filename)
             new_filename += ".jpg"
             screens = models.Screenshot(game_id=game.id, filename=new_filename, approved=scr[1], is_thumb=is_thumb)
             db.session.add(screens)
-        
+
         #save developer, if needed
         developer = models.Developer.query.filter(models.Developer.name==developer_name).first()
         if not developer:
@@ -106,7 +107,7 @@ try:
         db.session.commit()
         game.developer_id = developer.id
         db.session.commit()
-            
+
         #save the categories to category_game:
         cur2 = con.cursor()
         cur2.execute("SELECT * FROM games_game_categories WHERE game_id='" + temp_tag + "'")
@@ -140,26 +141,26 @@ try:
                 engine_id = 3
             if rel[9] == "Other":
                 engine_id = 4
-                
+
             ################
             #game_id=game.id
-            #game = db.session.query(models.Game).filter(models.Game.id==game_id).one()            
+            #game = db.session.query(models.Game).filter(models.Game.id==game_id).one()
             if ((game.listed_on==2) or (game.listed_on==3)) and (not (engine_id == 1)):
                 game.listed_on=1
-                
+
             release_date=rel[3]
-            
+
  #           from datetime import datetime
 #            mydate = datetime.strptime(release_date,'%m/%d/%Y')
             if release_date.year < 1900:
-            
+
                 release_date = release_date.replace(year=1901)
 #                release_date=mydate.strftime('%d %B %Y')
-            
+
             release = models.Release(game_id=game.id, release_date=release_date, release_version=rel[4], engine_id=engine_id, release_description = rel[10], engine_version = rel[8], user_id=rel_user_id, approved=rel[1])
             db.session.add(release)
             db.session.commit()
-            
+
             if rel[5]:
                 db.session.add(models.PlatformRelease(release_id=release.id, platform_id=1))
             if rel[6]:
@@ -168,9 +169,9 @@ try:
                 db.session.add(models.PlatformRelease(release_id=release.id, platform_id=3))
             if (not rel[5]) and (not rel[6]) and (not rel[7]):
                 db.session.add(models.PlatformRelease(release_id=release.id, platform_id=4))
-            
+
             db.session.commit()
-        
+
             cur3 = con.cursor()
             cur3.execute("SELECT * FROM games_file WHERE release_id=" + str(rel[0]))
             game_files = cur3.fetchall()
@@ -178,15 +179,15 @@ try:
                 file = models.File(release_id=release.id, filename=games_file[3][6:], description=games_file[4], approved=games_file[2])
                 db.session.add(file)
                 #db.session.commit()
-        
+
         db.session.commit()
         if i%100==0:
             print "*"
         i += 1
-        
+
     print "Importing users."
 #    cur.execute('SELECT * FROM auth_user LIMIT 10')
-    cur.execute('SELECT * FROM auth_user')    
+    cur.execute('SELECT * FROM auth_user')
     ROLE_USER = 0
     ROLE_ADMIN = 1
     ROLE_SUPERUSER = 2
@@ -216,9 +217,9 @@ try:
     # fix for a problem with user id autoincrement not working propery after the import
     cur4 = con.cursor()
     cur4.execute("SELECT setval('user_account_id_seq', (SELECT MAX(id) FROM user_account)+1)"
-    
+
 except psycopg2.DatabaseError, e:
-    print 'Error %s' % e    
+    print 'Error %s' % e
     sys.exit(1)
 finally:
     if con:
