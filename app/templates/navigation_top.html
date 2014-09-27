@@ -17,7 +17,7 @@
                         </span>
                     </li>
                     <li>
-                        <form class="navbar-form" role="form">
+                        <form class="navbar-form" role="form" action="{{ url_for('search_game') }}" >
                             <div class="input-group">
                                 <input style="width: 200px;" type="text" class="form-control" name="q" {% if search %}value='{{ search }}'{% endif %} placeholder="Search">
                                 <span class="input-group-btn">
