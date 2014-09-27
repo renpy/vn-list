@@ -777,10 +777,64 @@ def internal_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('500.html', site_data=site_data()), 500
+    
+@login_required
+@app.route('/add/<game_slug>/files/<release_id>', methods=['GET', 'POST'])
+def upload_file_form(game_slug, release_id):
+    # release_id = request.args.get('release', None)
+    # file_id = request.args.get('file', None)    
+    # if file_id: # edit/re-upload
+        # file = db.session.query(File).filter(File.id==file_id).one()
+        # form = UploadForm()
+        # form.edit.data = "True"
+    # else:
+    form = UploadForm()
+    form.edit.data = ""
+    if form.validate_on_submit():
+        uploaded_file = form.uploaded_file.data
+        save_file(uploaded_file, release_id)
+        flash('File uploaded!')
+    return render_template('upload_files.html', form=form, upload_url=game_slug + '/filesupload/'+release_id, site_data=site_data(), navigation=return_navigation())
 
 @login_required
-@app.route('/add/<game_slug>/files/', methods=['GET', 'POST'])
-def upload_file(game_slug):
+@app.route('/add/<game_slug>/filesupload/<release_id>', methods=['GET', 'POST'])
+def upload_file(game_slug, release_id):
+    #release_id = request.args.get('release', None)
+    #editfiles = request.args.get('edit_files', None)
+    uploaded_file = request.files['file']
+    save_file(uploaded_file, release_id)
+    return '{"jsonrpc" : "2.0", "result" : null, "id" : "id"}';
+    
+def save_file(uploaded_file, release_id):
+    if uploaded_file: # and allowed_file(uploaded_file.filename):
+        filename = secure_filename(uploaded_file.filename)
+        if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
+            fileName, fileExtension = os.path.splitext(filename)
+            filename = fileName + '-' + time.strftime("%Y%m%d-%H%M%S") + fileExtension
+        uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        description = "";
+        file = File(release_id=release_id, filename=filename, description=description)
+        file.approved = False;
+        db.session.add(file)
+        db.session.commit()
+        
+@login_required
+@app.route('/edit/<game_slug>/filesupload/<release_id>', methods=['POST', 'GET'])
+def edit_file_descriptions(game_slug, release_id):
+    release = Release.query.filter(Release.id==release_id).one()
+    if request.method == 'POST':
+        for file_list in release.files:
+            file = File.query.filter(File.id==file_list.id).one()
+            file_list_id = file_list.id
+            file_list_id = "x501"
+            file.description = request.form["file_id_" + str(file_list.id)]
+        db.session.commit()
+        flash("Changes saved.")
+    return render_template('edit_files.html', release=release, site_data=site_data(), navigation=return_navigation())
+
+@login_required
+@app.route('/add/<game_slug>/filesold/', methods=['GET', 'POST'])
+def upload_file_old(game_slug):
     release_id = request.args.get('release', None)
     file_id = request.args.get('file', None)
 

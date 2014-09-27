@@ -219,3 +219,6 @@ pip-log.txt
 scr_uploads/
 app/static/bak/
 uploads/
+app/static/plupload/js/i18n
+app/static/plupload/examples
+

@@ -209,6 +209,10 @@ try:
         i += 1
     db.session.commit()
 
+    # fix for a problem with user id autoincrement not working propery after the import
+    cur4 = con.cursor()
+    cur4.execute("SELECT setval('user_account_id_seq', (SELECT MAX(id) FROM user_account)+1)"
+    
 except psycopg2.DatabaseError, e:
     print 'Error %s' % e    
     sys.exit(1)

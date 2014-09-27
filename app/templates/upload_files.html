@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+{% block body %}
+
+{% if error %}<p><strong>Error:</strong> {{ error }}{% endif %}
+<h2>Upload files for this release</h2>
+<form class="form-horizontal" method="post" enctype="multipart/form-data" name="file_upload">
+  {{form.hidden_tag()}}
+
+  
+<script type="text/javascript" src="/static/plupload/js/plupload.full.min.js"></script>
+  
+
+<div id="filelist">  
+      <div class="control-group">
+        <div class="controls">
+          {{ form.uploaded_file }}
+        </div>
+      </div>
+      <div class="control-group">
+          <label class="control-label" for="{{ form.description.id }}">{{ form.description.label }}</label>
+        <div class="controls">
+          {{ form.description }}
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+      </div>
+</div>
+
+<div id="container">
+    <a id="pickfiles" class="btn btn-default" href="javascript:;">Select files</a> 
+    <a id="uploadfiles" href="javascript:;" class="btn btn-default" style="visibility: hidden;">Start upload</a>
+    <br/><br/>
+    <a id="done" href="/edit/{{ upload_url }}" class="btn btn-success" style="visibility: hidden;">Done</a>
+</div>
+
+<div class="alert alert-danger" role="alert" id="error" style="visibility: hidden;"></div>
+<div class="alert alert-success" role="alert" id="success" style="visibility: hidden;"></div>
+
+</form>
+
+
+
+
+<script type="text/javascript">
+var uploader = new plupload.Uploader({
+	runtimes : 'html5,flash,silverlight,html4',
+	browse_button : 'pickfiles', // you can pass in id...
+	container: document.getElementById('container'), // ... or DOM Element itself
+	url : '/add/{{ upload_url }}',
+	flash_swf_url : '/static/plupload/js/Moxie.swf',
+	silverlight_xap_url : '/static/plupload/js/Moxie.xap',
+	
+	filters : {
+		//max_file_size : '10mb',
+		mime_types: [
+			{title : "Zip files", extensions : "zip"},
+            {title : "Exe files", extensions : "exe"}
+		]
+	},
+
+	init: {
+		PostInit: function() {
+			document.getElementById('filelist').innerHTML = '';
+			document.getElementById('uploadfiles').onclick = function() {
+				uploader.start();
+				return false;
+			};
+		},
+
+		FilesAdded: function(up, files) {
+			plupload.each(files, function(file) {
+				document.getElementById('filelist').innerHTML += '<div style="width: 25%; margin-right: 20px;" class="pull-left"><div class="progress"><div '+'id="progress'+file.id+'" '+'class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width: 1%;"></div></div></div>';
+                
+                document.getElementById('filelist').innerHTML += '<div class="pull-left" style="width: 25%;" id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>';
+                
+                //document.getElementById('filelist').innerHTML += '<div class="pull-left" ><label class="control-label" style="margin-right: 20px;" for="{{ form.description.id }}">{{ form.description.label }}</label><input type="text" class="form-control" id="description_' + file.name + '" name="description_' + file.name + '"></div>';
+                
+                //document.getElementById('filelist').innerHTML += '<form class="form-inline" method="post"><div class="form-group"><label class="control-label" for="{{ form.description.id }}">{{ form.description.label }}</label><div class="controls">{{ form.description }}</div></div></form>';
+                
+                document.getElementById('filelist').innerHTML += '<div class="clearfix"></div>';
+                
+                document.getElementById("uploadfiles").style.visibility="visible";
+                
+			});
+            
+		},
+
+		UploadProgress: function(up, file) {
+			//document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
+            document.getElementById("progress"+file.id).style.width = file.percent+"%";
+            document.getElementById("progress"+file.id).innerHTML = file.percent+"%";
+            document.getElementById("progress"+file.id).ariaValuenow = file.percent;
+		},
+        
+        FileUploaded: function(up, file, info) {
+            document.getElementById("progress"+file.id).className = document.getElementById("progress"+file.id).className.replace( /(?:^|\s)active(?!\S)/g , '' );
+            document.getElementById("success").style.visibility="visible";
+            document.getElementById("progress"+file.id).classList.add("progress-bar-success");
+            document.getElementById('success').innerHTML += file.name + " uploaded!<br/>";
+        },
+        
+        BeforeUpload: function(up, file) { // Called right before the upload for a given file starts, can be used to cancel it if required
+            document.getElementById("progress"+file.id).classList.add("active");
+        },
+        
+        UploadComplete: function(up, files) { // Called when all files are either uploaded or failed
+            document.getElementById("uploadfiles").style.visibility="hidden";
+            document.getElementById("done").style.visibility="visible";
+        },
+
+        
+		Error: function(up, err) {
+            document.getElementById("error").style.visibility="visible";
+			document.getElementById('error').innerHTML += "\nError #" + err.code + ": " + err.message;
+		}
+	}
+});
+
+uploader.init();
+
+</script>
+
+
+
+{% endblock %}
