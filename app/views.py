@@ -1068,7 +1068,12 @@ def delete_release(slug, id):
     release = Release.query.filter_by(id=id).first()
     for file in release.files:
         file = File.query.filter_by(id=file.id).first()
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+
+        try:
+            os.chmod(os.path.join(app.config['UPLOAD_FOLDER'], file.filename), 0)
+        except:
+            pass
+
         db.session.delete(file)
     db.session.delete(release)
     db.session.commit()
