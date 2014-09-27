@@ -157,7 +157,8 @@ def select_random_games(num):
         res.playtime = game.playtime
         res.words = game.words
         res.age_rating = game.age_rating
-
+        if not game.age_rating.is_adult:
+            screenshots.append(res)
         screenshots.append(res)
     return screenshots
 

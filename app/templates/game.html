@@ -78,7 +78,7 @@
 &bull;{% endif %}
 {% if game.playtime == -1 %}{{ game.temp_playtime }} &bull;{% endif %}	
 {% if game.words %}{{ '{:,}'.format(game.words) }} words &bull;{% endif %}
-<span {% if game.age_rating.is_adult %}class="label label-important"{% endif %}>{% if not game.age_rating.id == 1 %}Ages {% endif %}{{ game.age_rating.name}}</span>
+<span {% if game.age_rating.is_adult %}class="label label-danger"{% endif %}>{% if not game.age_rating.id == 1 %}Ages {% endif %}{{ game.age_rating.name}}</span>
 </p>
 
 <p>
