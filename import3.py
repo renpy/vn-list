@@ -6,7 +6,12 @@ import os
 
 files = db.session.query(models.File).all()
 for file in files:
-    statinfo = os.stat(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-    file.size=statinfo.st_size
-#db.session.commit()
+    fn = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+
+    if os.path.exists(fn):
+        statinfo = os.stat(fn)
+        file.size=statinfo.st_size
+    else:
+        print("Bad fn", fn)
+db.session.commit()
 print "Done."

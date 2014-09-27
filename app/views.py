@@ -1090,7 +1090,7 @@ def delete_game(slug):
         delete_release(slug, release.id)
     db.session.delete(game)
     db.session.commit()
-    return redirect(url_for('/'))
+    return redirect('/')
 
 def no_permission(game_user_id = None):
 
