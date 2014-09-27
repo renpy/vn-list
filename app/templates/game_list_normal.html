@@ -2,7 +2,7 @@
 <div class="pull-right">
     <ul style="list-style-type: none;">
         <li class="col-md-12;">
-            {% if game.screenshot %}
+            {% if game.screenshot and not game.age_rating.is_adult %}
                 {% if game.screenshot.approved %}
                     <a href="{{ url_for('game_details',game_slug=game.slug) }}">
                         {% if game.screenshot.filename[:11]=="screenshot/" %}
@@ -26,21 +26,21 @@
 {{ game.developer.name }}
 {# <a href="{{ url_for('developer_info', developer=game.developer_id) }}">{{ game.maker }}</a>  #}
 {% else %}
-{{ game.maker }} 
+{{ game.maker }}
 {% endif %}{% if game.link.url %} &bull; <a href="{{ game.link.url }}" rel="tooltip" style="white-space: nowrap;" title="{{ game.link.url }}">{{ game.link.name }}</a>{% endif %}</h2>
-    
+
 <p>{{ game.description }}</p>
 
 <p style="font-size: 130%;">
 {{ game.releases[0].release_date.strftime('%b %d, %Y') }} &bull;
 {% if game.playtime > 0%}
-	{% if game.playtime>60 %} 
+	{% if game.playtime>60 %}
   	{{ "%.2f"|format(game.playtime/60) }} hours
 	{% else %}
 		{{ game.playtime }} minutes
-	{% endif %}	
+	{% endif %}
 &bull;{% endif %}
-{% if game.playtime == -1 %}{{ game.temp_playtime }} &bull;{% endif %}	
+{% if game.playtime == -1 %}{{ game.temp_playtime }} &bull;{% endif %}
 {% if game.words %}{{ '{:,}'.format(game.words) }} words &bull;{% endif %}
 <span {% if game.age_rating.is_adult %}class="label label-danger"{% endif %}>{% if not game.age_rating.id == 1 %}Ages {% endif %}{{ game.age_rating.name}}</span>
 </p>
