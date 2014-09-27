@@ -1,8 +1,5 @@
 from app import app, db, lm, oid
 from flask import render_template, request, session, redirect, url_for, abort, flash, g, send_from_directory
-
-
-
 from PIL import Image
 #import Image
 import os, sys, string, random, datetime, uuid, math, shutil, hashlib, random, time, os.path
@@ -834,8 +831,10 @@ def save_file(uploaded_file, release_id):
             fileName, fileExtension = os.path.splitext(filename)
             filename = fileName + '-' + time.strftime("%Y%m%d-%H%M%S") + fileExtension
         uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
         description = "";
-        file = File(release_id=release_id, filename=filename, description=description)
+        statinfo = os.stat(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        file = File(release_id=release_id, filename=filename, description=description, size=statinfo.st_size)
         file.approved = False;
         db.session.add(file)
         db.session.commit()
@@ -1094,7 +1093,7 @@ def no_permission(game_user_id = None):
     if game_user_id==g.user.id or g.user.role==1 or g.user.role==2:
         return False
     return render_template('permission_denied.html', site_data=site_data(), navigation=return_navigation())
-
+    
 # @app.route('/getvndb/<slug>')
 # def get_vndb(slug):
     ##http://thomasfischer.biz/?p=622

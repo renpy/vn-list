@@ -123,7 +123,7 @@
         <p><strong>Downloads:</strong><p/>
         {% for file in release.files %}
         <p{% if not file.approved %} class="alert alert-danger"{% endif %}>
-            <a href="{{ url_for('uploaded_file', filename=file.filename) }}"><i class="glyphicon glyphicon-download"></i> {{ file.filename }}</a> ({{ file.size }}) - {{ file.description }}{% if not file.approved %} - <strong>Unapproved</strong>{% endif %} {% if g.user.role==1 or g.user.role==2 %}{% if not file.approved %}<a class="btn btn-default btn-xs" href="{{ url_for('approve_file', id=file.id, slug=game.slug) }}">Approve</a>{% endif %}{% endif %}
+            <a href="{{ url_for('uploaded_file', filename=file.filename) }}"><i class="glyphicon glyphicon-download"></i> {{ file.filename }}</a> ({{ file.size|filesizeformat }}) - {{ file.description }}{% if not file.approved %} - <strong>Unapproved</strong>{% endif %} {% if g.user.role==1 or g.user.role==2 %}{% if not file.approved %}<a class="btn btn-default btn-xs" href="{{ url_for('approve_file', id=file.id, slug=game.slug) }}">Approve</a>{% endif %}{% endif %}
             {% if g.user.role==1 or g.user.role==2 %}
                 <a href="#" onclick="if (confirm('Delete file {{ file.filename }}?') == true) {window.location.href = '{{ url_for('delete_file',slug=game.slug,id=file.id) }}';}" class="btn btn-danger btn-xs">Delete file</a>
             {% endif %}
