@@ -127,9 +127,12 @@ def return_games(category=None, order=None, game_slug=None, approved=True, platf
             games = games.order_by(Game.game_title)
         if order == "date":
             games = games.join(Release)
-            games = games.order_by(Release.release_date)
+            games = games.order_by(Release.release_date.desc())
         if order == "words":
             games = games.order_by(Game.words_estimate)
+    else:
+        games = games.join(Release)
+        games = games.order_by(Release.release_date.asc())
 
     if game_slug:
         games = games.one()
@@ -183,6 +186,8 @@ def index():
 def show_entries_letter(filter=''):
     valid_category = False
     order = request.args.get('order', None)
+    if not order:
+        order='title'
     search_by_letter = False
     if filter in string.ascii_uppercase:
         valid_category = True
@@ -197,6 +202,8 @@ def show_entries_letter(filter=''):
 def show_entries_year(filter=''):
     valid_category = False
     order = request.args.get('order', None)
+    if not order:
+        order='date'
     end_year = date.today().year+1
     site_data_var = site_data()
     start_year = site_data_var['start_year']
