@@ -301,6 +301,9 @@ def statistics():
 @login_required
 def edit_game(game_slug):
     game = db.session.query(Game).filter(Game.slug==game_slug).one()
+    no_perm = no_permission(game.user_id)
+    if no_perm:
+        return no_perm
     error = None
     form = GameFormEdit()
     if form.validate_on_submit():
@@ -536,9 +539,13 @@ def add_release(game_slug=""):
 @app.route('/edit/<game_slug>/release/<release_id>', methods=['GET', 'POST'])
 @login_required
 def edit_release(game_slug="", release_id=""):
+    game = Game.query.filter(Game.slug==game_slug).one()
+    no_perm = no_permission(game.user_id)
+    if no_perm:
+        return no_perm
     form = ReleaseForm()
     error = None
-    game = Game.query.filter(Game.slug==game_slug).one()
+
     release = db.session.query(Release).filter(Release.id==release_id).one()
 
     if form.validate_on_submit():
@@ -821,6 +828,10 @@ def save_file(uploaded_file, release_id):
 @login_required
 @app.route('/edit/<game_slug>/filesupload/<release_id>', methods=['POST', 'GET'])
 def edit_file_descriptions(game_slug, release_id):
+    game = Game.query.filter_by(slug=slug).first()
+    no_perm = no_permission(game.user_id)
+    if no_perm:
+        return no_perm
     release = Release.query.filter(Release.id==release_id).one()
     if request.method == 'POST':
         for file_list in release.files:
@@ -938,6 +949,9 @@ def change_domain_testing(domain_id):
 
 @app.route('/approve/file/<id>/<slug>')
 def approve_file(id, slug):
+    no_perm = no_permission()
+    if no_perm:
+        return no_perm
     file = db.session.query(File).filter(File.id==id).one()
     file.approved = True
     db.session.commit()
@@ -945,6 +959,9 @@ def approve_file(id, slug):
 
 @app.route('/approve/release/<id>/<slug>')
 def approve_release(id, slug):
+    no_perm = no_permission()
+    if no_perm:
+        return no_perm
     release = db.session.query(Release).filter(Release.id==id).one()
     release.approved = True
     db.session.commit()
@@ -952,6 +969,9 @@ def approve_release(id, slug):
 
 @app.route('/approve/game/<id>/<slug>')
 def approve_game(id, slug):
+    no_perm = no_permission()
+    if no_perm:
+        return no_perm
     game = db.session.query(Game).filter(Game.id==id).one()
     game.approved = True
     db.session.commit()
@@ -959,6 +979,11 @@ def approve_game(id, slug):
 
 @app.route('/delete_screenshot/<slug>/<id>')
 def delete_screenshot(slug, id):
+    game = Game.query.filter_by(slug=slug).first()
+    no_perm = no_permission(game.user_id)
+    if no_perm:
+        return no_perm
+
     screenshot = Screenshot.query.filter_by(id=id).first()
     filename = screenshot.filename
     os.remove(os.path.join(app.config['IMAGE_UPLOAD_FOLDER'], filename))
@@ -970,6 +995,11 @@ def delete_screenshot(slug, id):
 
 @app.route('/delete_file/<slug>/<id>')
 def delete_file(slug, id):
+    game = Game.query.filter_by(slug=slug).first()
+    no_perm = no_permission(game.user_id)
+    if no_perm:
+        return no_perm
+
     file = File.query.filter_by(id=id).first()
     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
     db.session.delete(file)
@@ -978,6 +1008,11 @@ def delete_file(slug, id):
 
 @app.route('/set_thumbnail/<slug>/<id>', methods=['GET', 'POST'])
 def set_thumbnail(slug, id):
+    game = Game.query.filter_by(slug=slug).first()
+    no_perm = no_permission(game.user_id)
+    if no_perm:
+        return no_perm
+
     screenshots = Game.query.filter_by(slug=slug).first().screenshots
     for screenshot in screenshots:
         screenshot.is_thumb = False
@@ -989,6 +1024,10 @@ def set_thumbnail(slug, id):
 
 @app.route('/approve_screenshot/<slug>/<id>', methods=['GET', 'POST'])
 def approve_screenshot(slug, id):
+    no_perm = no_permission()
+    if no_perm:
+        return no_perm
+
     screenshot = Screenshot.query.filter_by(id=id).first()
     screenshot.approved = True
     db.session.commit()
@@ -996,6 +1035,11 @@ def approve_screenshot(slug, id):
 
 @app.route('/delete_release/<slug>/<id>')
 def delete_release(slug, id):
+    game = Game.query.filter_by(slug=slug).first()
+    no_perm = no_permission(game.user_id)
+    if no_perm:
+        return no_perm
+
     release = Release.query.filter_by(id=id).first()
     for file in release.files:
         file = File.query.filter_by(id=file.id).first()
@@ -1008,12 +1052,22 @@ def delete_release(slug, id):
 @app.route('/delete_game/<slug>')
 def delete_game(slug):
     game = Game.query.filter_by(slug=slug).first()
+    no_perm = no_permission(game.user_id)
+    if no_perm:
+        return no_perm
+
     for release in game.releases:
         delete_release(slug, release.id)
     db.session.delete(game)
     db.session.commit()
     return redirect(url_for('/'))
-    
+
+def no_permission(game_user_id = None):
+    if game_user_id==None and (g.user.role==1 or g.user.role==2):
+        return False
+    if game_user_id==g.user.id or g.user.role==1 or g.user.role==2:
+        return False
+    return render_template('permission_denied.html', site_data=site_data(), navigation=return_navigation())
     
 # @app.route('/getvndb/<slug>')
 # def get_vndb(slug):
