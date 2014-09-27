@@ -828,7 +828,7 @@ def save_file(uploaded_file, release_id):
 @login_required
 @app.route('/edit/<game_slug>/filesupload/<release_id>', methods=['POST', 'GET'])
 def edit_file_descriptions(game_slug, release_id):
-    game = Game.query.filter_by(slug=slug).first()
+    game = Game.query.filter_by(slug=game_slug).first()
     no_perm = no_permission(game.user_id)
     if no_perm:
         return no_perm
@@ -964,6 +964,8 @@ def approve_release(id, slug):
         return no_perm
     release = db.session.query(Release).filter(Release.id==id).one()
     release.approved = True
+    for file in release.files:
+        file.approved = True
     db.session.commit()
     return redirect(url_for('game_details', game_slug=slug))
 
@@ -974,6 +976,15 @@ def approve_game(id, slug):
         return no_perm
     game = db.session.query(Game).filter(Game.id==id).one()
     game.approved = True
+
+    for release in game.releases:
+        release.approved = True
+        for file in release.files:
+            file.approved = True
+
+    for screenshot in game.screenshots:
+        screenshot.approved = True
+
     db.session.commit()
     return redirect(url_for('game_details', game_slug=slug))
 
