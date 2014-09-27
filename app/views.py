@@ -159,14 +159,12 @@ def select_random_games(num):
         res.age_rating = game.age_rating
         if not game.age_rating.is_adult:
             screenshots.append(res)
-        screenshots.append(res)
     return screenshots
 
 def select_recent_games(num):
     site_data_var=site_data()
     result = Game.query.join(Release)
     result = result.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==True))
-#    result = result.add_columns(Release.release_date, Game.game_title, Game.slug, Game.screenshot, Game.description)
     result = result.order_by(Game.id.desc()).limit(num+1)
     return result
 
