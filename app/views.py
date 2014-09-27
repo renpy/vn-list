@@ -9,7 +9,7 @@ from datetime import date, timedelta
 from werkzeug import secure_filename
 from sqlalchemy.orm import sessionmaker
 from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
-from models import UserAccount, Category, CategoryGroup, CategoryGame, Engine, LinkType, LinkGame, Platform, PlatformRelease, Release, Game, Screenshot, File, Developer, Group, Person, AgeRating, ROLE_USER, ROLE_ADMIN
+from models import UserAccount, Category, CategoryGroup, CategoryGame, Engine, LinkType, LinkGame, Platform, PlatformRelease, Release, Game, Screenshot, File, Developer, Group, Person, AgeRating, ROLE_USER, ROLE_ADMIN, ROLE_SUPERUSER
 from config import ADMINS
 from config import DOMAIN_ID, RENAI_ARCHIVE_ID, RENPY_LIST_ID
 from config_more import START_YEAR, DOMAIN_TITLE, DOMAIN_URLS, DOMAIN_TITLES, DOMAIN_NAMES, START_YEARS
@@ -169,7 +169,7 @@ def select_recent_games(num):
     result = result.join(AgeRating)
     result = result.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==True))
     result = result.filter(AgeRating.is_adult==False)
-    
+
     result = result.order_by(Release.release_date.desc()).limit(num+1)
     return result
 
@@ -831,7 +831,7 @@ def save_file(uploaded_file, release_id):
             fileName, fileExtension = os.path.splitext(filename)
             filename = fileName + '-' + time.strftime("%Y%m%d-%H%M%S") + fileExtension
         uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        
+
         description = "";
         statinfo = os.stat(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         file = File(release_id=release_id, filename=filename, description=description, size=statinfo.st_size)
@@ -1005,7 +1005,7 @@ def approve_game(id, slug):
 @app.route('/delete_screenshot/<slug>/<id>')
 def delete_screenshot(slug, id):
     game = Game.query.filter_by(slug=slug).first()
-    no_perm = no_permission(game.user_id)
+    no_perm = no_permission()
     if no_perm:
         return no_perm
 
@@ -1021,7 +1021,7 @@ def delete_screenshot(slug, id):
 @app.route('/delete_file/<slug>/<id>')
 def delete_file(slug, id):
     game = Game.query.filter_by(slug=slug).first()
-    no_perm = no_permission(game.user_id)
+    no_perm = no_permission()
     if no_perm:
         return no_perm
 
@@ -1034,7 +1034,7 @@ def delete_file(slug, id):
 @app.route('/set_thumbnail/<slug>/<id>', methods=['GET', 'POST'])
 def set_thumbnail(slug, id):
     game = Game.query.filter_by(slug=slug).first()
-    no_perm = no_permission(game.user_id)
+    no_perm = no_permission()
     if no_perm:
         return no_perm
 
@@ -1061,7 +1061,7 @@ def approve_screenshot(slug, id):
 @app.route('/delete_release/<slug>/<id>')
 def delete_release(slug, id):
     game = Game.query.filter_by(slug=slug).first()
-    no_perm = no_permission(game.user_id)
+    no_perm = no_permission()
     if no_perm:
         return no_perm
 
@@ -1077,7 +1077,7 @@ def delete_release(slug, id):
 @app.route('/delete_game/<slug>')
 def delete_game(slug):
     game = Game.query.filter_by(slug=slug).first()
-    no_perm = no_permission(game.user_id)
+    no_perm = no_permission()
     if no_perm:
         return no_perm
 
@@ -1088,12 +1088,15 @@ def delete_game(slug):
     return redirect(url_for('/'))
 
 def no_permission(game_user_id = None):
-    if game_user_id==None and (g.user.role==1 or g.user.role==2):
+
+    if g.user.role in [ ROLE_ADMIN, ROLE_SUPERUSER ]:
         return False
-    if game_user_id==g.user.id or g.user.role==1 or g.user.role==2:
+
+    if (game_user_id is not None) and (game_user_id == g.user.id):
         return False
+
     return render_template('permission_denied.html', site_data=site_data(), navigation=return_navigation())
-    
+
 # @app.route('/getvndb/<slug>')
 # def get_vndb(slug):
     ##http://thomasfischer.biz/?p=622
