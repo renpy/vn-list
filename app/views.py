@@ -12,7 +12,7 @@ from datetime import date, timedelta
 from werkzeug import secure_filename
 from sqlalchemy.orm import sessionmaker
 from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
-from models import UserAccount, Category, CategoryGroup, CategoryGame, Engine, LinkType, LinkGame, Platform, PlatformRelease, Release, Game, Screenshot, File, Developer, Group, Person, ROLE_USER, ROLE_ADMIN
+from models import UserAccount, Category, CategoryGroup, CategoryGame, Engine, LinkType, LinkGame, Platform, PlatformRelease, Release, Game, Screenshot, File, Developer, Group, Person, AgeRating, ROLE_USER, ROLE_ADMIN
 from config import ADMINS
 from config import DOMAIN_ID, RENAI_ARCHIVE_ID, RENPY_LIST_ID
 from config_more import START_YEAR, DOMAIN_TITLE, DOMAIN_URLS, DOMAIN_TITLES, DOMAIN_NAMES, START_YEARS
@@ -164,8 +164,11 @@ def select_random_games(num):
 def select_recent_games(num):
     site_data_var=site_data()
     result = Game.query.join(Release)
+    result = result.join(AgeRating)
     result = result.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==True))
-    result = result.order_by(Game.id.desc()).limit(num+1)
+    result = result.filter(AgeRating.is_adult==False)
+    
+    result = result.order_by(Release.release_date.desc()).limit(num+1)
     return result
 
 @app.route('/')
@@ -350,13 +353,13 @@ def edit_game(game_slug):
         developer_name = developer_name.replace("'", "")
         developer = Developer.query.filter(Developer.name==developer_name).first()
         if not developer:
-            if creator_type=='person':
+            if form.creator_type.data=='person':
                 type=1
                 person = Person('')
                 db.session.add(person)
                 db.session.commit()
                 developer = Developer (developer_name, type, g.user.id, person_id=person.id)
-            if creator_type=='group':
+            if form.creator_type.data=='group':
                 type=2
                 group = Group('')
                 db.session.add(group)

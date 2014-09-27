@@ -12,38 +12,34 @@
 						
 <h2>Recently added</h2>
 {% for recent in recent_games %}
+    <a href="{{ url_for('game_details', game_slug=recent.slug) }}" class="pull-left" style="margin-right: 20px;" rel="popover" data-html="true" data-toggle="popover" data-placement="{% if not loop.last %}right{% else %}left{% endif %}" data-trigger="hover" data-content="{% if recent.screenshot.filename %}{% if recent.screenshot.filename[:11]=="screenshot/" %}<img class='img-polaroid' src='http://renai.us/site_media/media/screenshot/small/{{ recent.screenshot.filename[11:] }}' alt='{{ recent.game_title }} thumbnail'/>{% else %}<img class='img-polaroid' src='{{ url_for('image_small', filename=recent.screenshot.filename) }}' width='240' alt='{{ recent.game_title }} thumbnail'/> {% endif %}<br>
+    {% if recent.playtime>0 %}
+        {% if recent.playtime>60 %} 
+        {{ "%.2f"|format(recent.playtime/60) }} hours
+        {% else %}
+            {{ recent.playtime }} minutes
+        {% endif %}	
+        &bull;
+    {% endif %}
+    {% if recent.playtime == -1 %}{{ recent.temp_playtime }} &bull;{% endif %}	
+    {% if recent.words %}{{ '{:,}'.format(recent.words) }} words &bull;{% endif %}
+    <span {% if recent.age_rating.is_adult %}class="label label-danger"{% endif %}>{% if not recent.age_rating.id == 1 %}Ages {% endif %}{{ recent.age_rating.name}}</span>
+    &bull; 
+    {% for cat in recent.categories %}{{ cat.categories.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+    <hr/>
+    {{ recent.description }}" title="{{ recent.game_title }}{% endif %}">
 
-<a href="{{ url_for('game_details', game_slug=recent.slug) }}" class="pull-left" style="margin-right: 20px;" rel="popover" data-html="true" data-toggle="popover" data-placement="{% if not loop.last %}right{% else %}left{% endif %}" data-trigger="hover" data-content="{% if recent.screenshot.filename %}{% if recent.screenshot.filename[:11]=="screenshot/" %}
-    <img class='img-polaroid' src='http://renai.us/site_media/media/screenshot/small/{{ recent.screenshot.filename[11:] }}' alt='{{ recent.game_title }} thumbnail' />
-  {% else %}<img class='img-polaroid' src='{{ url_for('image_small', filename=recent.screenshot.filename) }}' width='240' alt='{{ recent.game_title }} thumbnail'/> {% endif %}<br>
-            {% if recent.playtime>0 %}
-	{% if recent.playtime>60 %} 
-  	{{ "%.2f"|format(recent.playtime/60) }} hours
-	{% else %}
-		{{ recent.playtime }} minutes
-	{% endif %}	
-&bull;{% endif %}
-{% if recent.playtime == -1 %}{{ recent.temp_playtime }} &bull;{% endif %}	
-{% if recent.words %}{{ '{:,}'.format(recent.words) }} words &bull;{% endif %}
-<span {% if recent.age_rating.is_adult %}class="label label-important"{% endif %}>{% if not recent.age_rating.id == 1 %}Ages {% endif %}{{ recent.age_rating.name}}</span>
-&bull; 
-          {% for cat in recent.categories %}{{ cat.categories.name }}{% if not loop.last %}, {% endif %}{% endfor %}
-<hr>
-  {{ recent.description }}" title="{{ recent.game_title }}">{% endif %}
-  
-<div class="center" style="color: black;">{{ recent.release.release_date }}:</div>
+    <div class="center" style="color: black;">{{ recent.release.release_date }}:</div>
 
-{% if recent.screenshot.filename %}
-  {% if recent.screenshot.filename[:11]=="screenshot/" %}
-    <img class='img-polaroid' src='http://renai.us/site_media/media/screenshot/small/{{ recent.screenshot.filename[11:] }}' alt='{{ recent.game_title }} thumbnail' width='120' height='90' />
-  {% else %}
-    <img class='img-polaroid' src='{{ url_for('image_small', filename=recent.screenshot.filename) }}' width='120' height='90' alt='{{ recent.game_title }} thumbnail'/> 
-  {% endif %}
-{% endif %}
-  <div style="width: 120px; color: black; font-weight: bold;">{{ recent.game_title }}</div>
-
+    {% if recent.screenshot.filename %}
+        {% if recent.screenshot.filename[:11]=="screenshot/" %}
+            <img class='img-polaroid' src='http://renai.us/site_media/media/screenshot/small/{{ recent.screenshot.filename[11:] }}' alt='{{ recent.game_title }} thumbnail' width='120' height='90' />
+        {% else %}
+            <img class='img-polaroid' src='{{ url_for('image_small', filename=recent.screenshot.filename) }}' width='120' height='90' alt='{{ recent.game_title }} thumbnail'/> 
+        {% endif %}
+    {% endif %}
+    <div style="width: 120px; color: black; font-weight: bold;">{{ recent.game_title }}</div>
 </a>
-
 {% endfor %}
 
 <div class="clearfix" style="margin-bottom: 20px;"></div>
