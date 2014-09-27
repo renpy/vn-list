@@ -596,11 +596,11 @@ def add_screenshot(game_slug=''):
 
             filename2 = os.path.join(app.config['IMAGE_UPLOAD_FOLDER'], filename)
             #filename2 = filename.replace('\\', '/')
-            
+
             if os.path.isfile(filename2):
                 fileName, fileExtension = os.path.splitext(filename2)
                 filename2 = fileName + '-' + time.strftime("%Y%m%d-%H%M%S") + fileExtension
-            
+
             file.save(filename2)
             outfilename = resize_image(filename, game_slug)
             try:
@@ -617,13 +617,25 @@ def add_screenshot(game_slug=''):
     return render_template('add_screenshot.html', game=game, navigation=return_navigation(), is_thumb=is_thumb, site_data=site_data())
 
 def resize_image(filename, game_slug):
-    sizes = dict(normal = app.config['IMAGE_SIZE_NORMAL'], small = app.config['IMAGE_SIZE_SMALL'], medium = app.config['IMAGE_SIZE_MEDIUM'])
-    dirs = dict(normal = app.config['IMAGE_UPLOAD_FOLDER'], small = app.config['IMAGE_UPLOAD_FOLDER_SMALL'], medium = app.config['IMAGE_UPLOAD_FOLDER_MEDIUM'])
-    for s in ['normal','small','medium']:
+    sizes = dict(
+        normal = app.config['IMAGE_SIZE_NORMAL'],
+        small = app.config['IMAGE_SIZE_SMALL'],
+        medium = app.config['IMAGE_SIZE_MEDIUM'],
+        )
+
+    dirs = dict(
+        normal = app.config['IMAGE_UPLOAD_FOLDER'],
+        small = app.config['IMAGE_UPLOAD_FOLDER_SMALL'],
+        medium = app.config['IMAGE_UPLOAD_FOLDER_MEDIUM'],
+        original = app.config['IMAGE_UPLOAD_FOLDER_ORIGINAL'],
+        )
+
+    for s in ['original', 'small', 'medium', 'normal', ]:
         infile = dirs['normal'] + '/' + filename
         size = sizes[s]
-        #do_resize = False
-        do_resize = True
+
+        do_resize = (s != 'original')
+
         if do_resize:
             outfilename = os.path.splitext(filename)[0] + ".jpg"
         else:
@@ -784,12 +796,12 @@ def internal_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('500.html', site_data=site_data()), 500
-    
+
 @login_required
 @app.route('/add/<game_slug>/files/<release_id>', methods=['GET', 'POST'])
 def upload_file_form(game_slug, release_id):
     # release_id = request.args.get('release', None)
-    # file_id = request.args.get('file', None)    
+    # file_id = request.args.get('file', None)
     # if file_id: # edit/re-upload
         # file = db.session.query(File).filter(File.id==file_id).one()
         # form = UploadForm()
@@ -811,7 +823,7 @@ def upload_file(game_slug, release_id):
     uploaded_file = request.files['file']
     save_file(uploaded_file, release_id)
     return '{"jsonrpc" : "2.0", "result" : null, "id" : "id"}';
-    
+
 def save_file(uploaded_file, release_id):
     if uploaded_file: # and allowed_file(uploaded_file.filename):
         filename = secure_filename(uploaded_file.filename)
@@ -824,7 +836,7 @@ def save_file(uploaded_file, release_id):
         file.approved = False;
         db.session.add(file)
         db.session.commit()
-        
+
 @login_required
 @app.route('/edit/<game_slug>/filesupload/<release_id>', methods=['POST', 'GET'])
 def edit_file_descriptions(game_slug, release_id):
@@ -1079,7 +1091,7 @@ def no_permission(game_user_id = None):
     if game_user_id==g.user.id or g.user.role==1 or g.user.role==2:
         return False
     return render_template('permission_denied.html', site_data=site_data(), navigation=return_navigation())
-    
+
 # @app.route('/getvndb/<slug>')
 # def get_vndb(slug):
     ##http://thomasfischer.biz/?p=622
