@@ -140,8 +140,10 @@ def return_games(category=None, order=None, game_slug=None, approved=True, platf
 def select_random_games(num):
     site_data_var=site_data()
     screenshots = Screenshot.query.join(Game)
+    screenshots = screenshots.join(AgeRating)
     screenshots = screenshots.filter(and_(or_(Game.listed_on==site_data_var['domain_id'], Game.listed_on==site_data_var['renai_archive_id']+site_data_var['renpy_list_id']), Game.approved==True))
     screenshots = screenshots.filter(and_(Screenshot.is_thumb==True, Screenshot.approved==True))
+    screenshots = screenshots.filter(AgeRating.is_adult==False)
     num_screenshots = screenshots.count() #in case there is less screenshots in the db than required
     if num > num_screenshots:
         num = num_screenshots
@@ -157,8 +159,8 @@ def select_random_games(num):
         res.playtime = game.playtime
         res.words = game.words
         res.age_rating = game.age_rating
-        if not game.age_rating.is_adult:
-            screenshots.append(res)
+        #if not game.age_rating.is_adult:
+        screenshots.append(res)
     return screenshots
 
 def select_recent_games(num):

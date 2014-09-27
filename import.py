@@ -75,7 +75,11 @@ try:
             is_thumb=False
             if default_screenshot_id==scr[0]:
                 is_thumb=True
-            screens = models.Screenshot(game_id=game.id, filename=scr[3], approved=scr[1], is_thumb=is_thumb)
+            new_filename = scr[3][11:]
+            import os
+            new_filename, fileExtension = os.path.splitext(new_filename)
+            new_filename += ".jpg"
+            screens = models.Screenshot(game_id=game.id, filename=new_filename, approved=scr[1], is_thumb=is_thumb)
             db.session.add(screens)
         
         #save developer, if needed
