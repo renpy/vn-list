@@ -16,6 +16,8 @@ from config_more import START_YEAR, DOMAIN_TITLE, DOMAIN_URLS, DOMAIN_TITLES, DO
 from sqlalchemy import Table, and_, or_, desc
 from forms import LoginForm, LoginFormOid, SignupForm, PassResetForm, NewPasswordForm, AdminGameApproveForm, UploadForm, AccountForm, ChangePasswordForm, GameForm, GameFormEdit, ReleaseForm
 
+from sqlalchemy.orm.exc import NoResultFound
+
 def allowed_file_img(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS_IMG']
 
@@ -35,16 +37,16 @@ def now():
 
 ####################
 def site_data():
-    data=dict(title = DOMAIN_TITLE, domain_id=DOMAIN_ID, renai_archive_id=RENAI_ARCHIVE_ID, renpy_list_id=RENPY_LIST_ID, domain_urls=DOMAIN_URLS, titles=DOMAIN_TITLES, start_year=START_YEAR)
-    if 'DOMAIN_ID' in session:
-        if session['DOMAIN_ID']==str(RENAI_ARCHIVE_ID):
-            domain_id=RENAI_ARCHIVE_ID
-        if session['DOMAIN_ID']==str(RENPY_LIST_ID):
-            domain_id=RENPY_LIST_ID
-        #DOMAIN_NAME=DOMAIN_NAMES[domain_id]
-        title=DOMAIN_TITLES[domain_id]
-        start_year=START_YEARS[domain_id]
-        data=dict(title = title, domain_id=domain_id, renai_archive_id=RENAI_ARCHIVE_ID, renpy_list_id=RENPY_LIST_ID, domain_urls=DOMAIN_URLS, titles=DOMAIN_TITLES, start_year=start_year)
+
+    if request.host.lower().endswith("renpy.org"):
+        domain_id = RENPY_LIST_ID
+    else:
+        domain_id = RENAI_ARCHIVE_ID
+
+    title=DOMAIN_TITLES[domain_id]
+    start_year=START_YEARS[domain_id]
+    data=dict(title = title, domain_id=domain_id, renai_archive_id=RENAI_ARCHIVE_ID, renpy_list_id=RENPY_LIST_ID, domain_urls=DOMAIN_URLS, titles=DOMAIN_TITLES, start_year=start_year)
+
     return data
 
 def return_cats(show_in_navigation = False): #False means no filtering (show all categories)
@@ -132,7 +134,10 @@ def return_games(category=None, order=None, game_slug=None, approved=True, platf
         games = games.order_by(Release.release_date.asc())
 
     if game_slug:
-        games = games.one()
+        try:
+            games = games.one()
+        except NoResultFound:
+            abort(404)
     else:
         games = games.all()
     return games
