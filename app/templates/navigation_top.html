@@ -1,5 +1,5 @@
     <div class="navbar navbar-fixed-top navbar-default" role="navigation">
-        <div class="container-fluid">
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
@@ -12,11 +12,6 @@
             <div class="collapse navbar-collapse" id="navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <span>
-                            <a href="#menu-toggle" class="btn btn-default" style="margin-top: 7px;" id="menu-toggle" title="Toggle Side Menu" rel="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-transfer"></span></a>
-                        </span>
-                    </li>
-                    <li>
                         <form class="navbar-form" role="form" action="{{ url_for('search_game') }}" >
                             <div class="input-group">
                                 <input style="width: 200px;" type="text" class="form-control" name="q" {% if search %}value='{{ search }}'{% endif %} placeholder="Search">
@@ -26,7 +21,7 @@
                             </div><!-- /input-group -->
                         </form>
                     </li>
-              
+
                     {% for group in navigation %}
                         <li class="dropdown">
                             {% if not group.side_only %}
@@ -40,7 +35,7 @@
                         </li>
                     {% endfor %}
                 </ul>
-                
+
                 <ul class="nav pull-right navbar-nav">
                     {% if not g.user.is_authenticated() %}
                         <li class="pull-right"><a class="navbar-link" href="{{ url_for('signup') }}">Sign up</a></li>

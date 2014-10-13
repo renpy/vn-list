@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
-     
+
         <!-- Le styles -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">   
+        <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">
         <link href="/static/css/simple-sidebar.css" rel="stylesheet">
         <link href="/static/css/style_more.css" rel="stylesheet">
         <link href="/static/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" media="screen" />
@@ -20,7 +20,7 @@
         <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
         <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png"> #}
-        
+
     {% if site_data.domain_id==site_data.renpy_list_id %}
         <link rel="shortcut icon" href="/static/favrenpy.ico">
     {% else %}
@@ -32,14 +32,16 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
     </head>
-    <body>           
+    <body>
         <div id="wrapper">
             {% include 'navigation_top.html' %}
-            {% include 'navigation_side.html' %}
             <div id="page-content-wrapper">
-                <div class="container-fluid">
+                <div class="container">
                     <div class="row">
-                        <div class="col-md-12" >
+                        <div class="col-md-3">
+                        {% include 'navigation_side.html' %}
+                        </div>
+                        <div class="col-md-9" >
                         {% for message in get_flashed_messages() %}
                           <div class="alert alert-info fade in">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -54,35 +56,35 @@
                         <p>The games on this site are copyrighted by their owner, unless otherwise specified.</p>
                         <p>Please do not redistribute them without permission.</p>
                     </footer>
-                </div><!--/.fluid-container-->
+                </div>
             </div>
         </div>
 
-        
+
         <!-- Le javascript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
 
-            <script src="/static/jquery-1.9.1.min.js"></script> 
-            
+            <script src="/static/jquery-1.9.1.min.js"></script>
+
             {#<script src="/static/js/jquery-1.11.1.min.js"></script>#}
             <script src="/static/js/bootstrap.min.js"></script>
-            
-            
+
+
             <script type="text/javascript" src="/static/fancybox/jquery.fancybox.pack.js"></script>
             <script type="text/javascript" src="/static/fancybox/helpers/jquery.fancybox-buttons.js"></script>
             <script type="text/javascript" src="/static/fancybox/helpers/jquery.fancybox-media.js"></script>
-            
-            
-            
+
+
+
     {#		<script type="text/javascript" src="/static/fancybox/helpers/jquery.fancybox-thumbs.js"></script> #}
-        
-        
-        
-        
+
+
+
+
         <script src="/static/jquery-ui-1.10.3.custom.min.js"></script>
-        
-        
+
+
     {# included only on add_game: #}
     {% if developers is defined %}
     <script type="text/javascript" src="/static/js/typeahead.js"></script>
@@ -153,7 +155,7 @@
             });
         });
     </script>
-        
+
     <script type="text/javascript">
     //<![CDATA[
       (function() {
@@ -178,17 +180,17 @@
             $( "#datepicker" ).datepicker();
         });
     </script>
-    
+
     <script type="text/javascript">
         $('body').tooltip({
           selector: '[rel=tooltip]'
         });
         $(function () {
             $("[rel='popover']").popover();
-        });            
+        });
 
     </script>
-    
+
     <script>
       function changeHoursMins() {
         if (document.getElementById("playtime").value=="") {

@@ -1,46 +1,24 @@
 ﻿{% extends "layout.html" %}
 {% block body %}
 
-            <h1>{{ site_data.title }}</h1>
-            <p class="lead">
-						{% if site_data.domain_id==site_data.renai_archive_id %}<strong>Ren'Ai Archive</strong> is a collection of original English-language visual novels and <abbr rel="tooltip" title="romantic">ren'ai</abbr> games. We aim to provide an archive of all complete games of this type, that we can distribute for free. This site allows anyone to add games they've created or discovered.
-						{% endif %}
-						
-						{% if site_data.domain_id==site_data.renpy_list_id %}At <strong>Ren'Py games list</strong> we attempt to catalog every game made with the <a href="http://www.renpy.org/wiki/renpy/Home_Page">Ren'Py visual novel engine</a>. This site allows anyone to add games they've created or discovered.
-						{% endif %}
-						</p>
-						
-<h2>Recently added</h2>
+<h1>{{ site_data.title }}</h1>
+<p class="lead">
+{% if site_data.domain_id==site_data.renai_archive_id %}
+The <strong>Ren'Ai Archive</strong> is a collection of original English-language visual novels and <abbr rel="tooltip" title="romantic">ren'ai</abbr> games. We aim to provide an archive of all complete games of this type that we can distribute for free. This site allows anyone to add games they've created or discovered.
+{% endif %}
+
+{% if site_data.domain_id==site_data.renpy_list_id %}
+This <strong>Ren'Py games list</strong> attempts to catalog every game made with the <a href="http://www.renpy.org/">Ren'Py visual novel engine</a>. This site allows anyone to add games they've created or discovered.
+{% endif %}
+</p>
+
+<h2>Recently Added</h2>
+
+<ul>
 {% for recent in recent_games %}
-    <a href="{{ url_for('game_details', game_slug=recent.slug) }}" class="pull-left" style="margin-right: 20px;" rel="popover" data-html="true" data-toggle="popover" data-placement="{% if not loop.last %}right{% else %}left{% endif %}" data-trigger="hover" data-content="{% if recent.screenshot.filename %}{% if recent.screenshot.filename[:11]=="screenshot/" %}<img class='img-polaroid' src='http://renai.us/site_media/media/screenshot/small/{{ recent.screenshot.filename[11:] }}' alt='{{ recent.game_title }} thumbnail'/>{% else %}<img class='img-polaroid' src='{{ url_for('image_small', filename=recent.screenshot.filename) }}' width='240' alt='{{ recent.game_title }} thumbnail'/> {% endif %}<br>
-    {% if recent.playtime>0 %}
-        {% if recent.playtime>60 %} 
-        {{ "%.2f"|format(recent.playtime/60) }} hours
-        {% else %}
-            {{ recent.playtime }} minutes
-        {% endif %}	
-        &bull;
-    {% endif %}
-    {% if recent.playtime == -1 %}{{ recent.temp_playtime }} &bull;{% endif %}	
-    {% if recent.words %}{{ '{:,}'.format(recent.words) }} words &bull;{% endif %}
-    <span {% if recent.age_rating.is_adult %}class="label label-danger"{% endif %}>{% if not recent.age_rating.id == 1 %}Ages {% endif %}{{ recent.age_rating.name}}</span>
-    &bull; 
-    {% for cat in recent.categories %}{{ cat.categories.name }}{% if not loop.last %}, {% endif %}{% endfor %}
-    <hr/>
-    {{ recent.description }}" title="{{ recent.game_title }}{% endif %}">
-
-    <div class="center" style="color: black;">{{ recent.release.release_date }}:</div>
-
-    {% if recent.screenshot.filename %}
-        {% if recent.screenshot.filename[:11]=="screenshot/" %}
-            <img class='img-polaroid' src='http://renai.us/site_media/media/screenshot/small/{{ recent.screenshot.filename[11:] }}' alt='{{ recent.game_title }} thumbnail' width='120' height='90' />
-        {% else %}
-            <img class='img-polaroid' src='{{ url_for('image_small', filename=recent.screenshot.filename) }}' width='120' height='90' alt='{{ recent.game_title }} thumbnail'/> 
-        {% endif %}
-    {% endif %}
-    <div style="width: 120px; color: black; font-weight: bold;">{{ recent.game_title }}</div>
-</a>
+<li><b>{{ recent.release.release_date }}: </b> <a href="{{ url_for('game_details', game_slug=recent.slug) }}">{{ recent.game_title }}</a>
 {% endfor %}
+</ul>
 
 <div class="clearfix" style="margin-bottom: 20px;"></div>
 
@@ -67,19 +45,19 @@
         {% endif %}
             <div class="carousel-caption text-outline">
                 <h3><a href="{{ url_for('game_details', game_slug=screenshot.slug) }}">{{ screenshot.game_title }}</a><small style="color: #FFF;"> &bull; {{ screenshot.developer.name }}</small></h3>
-                <p><a href="{{ url_for('game_details', game_slug=screenshot.slug) }}">Click <u>here</u> for more info</a> &bull; 
+                <p><a href="{{ url_for('game_details', game_slug=screenshot.slug) }}">Click <u>here</u> for more info</a> &bull;
                 {% if screenshot.playtime>0 %}
-                    {% if screenshot.playtime>60 %} 
+                    {% if screenshot.playtime>60 %}
                     {{ "%.2f"|format(screenshot.playtime/60) }} hours
                     {% else %}
                         {{ screenshot.playtime }} minutes
-                    {% endif %}	
+                    {% endif %}
                     &bull;
                 {% endif %}
-                {% if screenshot.playtime == -1 %}{{ screenshot.temp_playtime }} &bull;{% endif %}	
+                {% if screenshot.playtime == -1 %}{{ screenshot.temp_playtime }} &bull;{% endif %}
                 {% if screenshot.words %}{{ '{:,}'.format(screenshot.words) }} words &bull;{% endif %}
                 <span {% if screenshot.age_rating.is_adult %}class="label label-important"{% endif %}>{% if not screenshot.age_rating.id == 1 %}Ages {% endif %}{{ screenshot.age_rating.name}}</span>
-                &bull; 
+                &bull;
                 {% for cat in screenshot.categories %}{{ cat.categories.name }}{% if not loop.last %}, {% endif %}{% endfor %}
                 </p>
             </div>
@@ -87,7 +65,7 @@
     {% endfor %}
     </div>
     <!-- Carousel nav -->
-    <a class="carousel-control left" href="#myCarousel" data-slide="prev" role="button"><span class="glyphicon glyphicon-chevron-left"></span></a>  
+    <a class="carousel-control left" href="#myCarousel" data-slide="prev" role="button"><span class="glyphicon glyphicon-chevron-left"></span></a>
     <a class="carousel-control right" href="#myCarousel" data-slide="next" role="button"><span class="glyphicon glyphicon-chevron-right"></span></a>
 
 </div>
@@ -95,6 +73,6 @@
 {% endif %}
 
 <h2>Add a Game!</h2>
-<p>If you have a game that's appropriate for this website, you can <a class="btn btn-info" href="{{ url_for('add_game') }}">Add a New Game</a> by filling out a simple form. We'll check it out within a few days, and add your contribution to the site. If you need help, please post in <a href="http://lemmasoft.renai.us/forums/viewtopic.php?f=4&t=6487">this forum thread</a>.</p>
+<p>If you have a game that's appropriate for this website, you can <a class="btn btn-info btn-small" href="{{ url_for('add_game') }}">Add a New Game</a> by filling out a simple form. We'll check it out within a few days, and add your contribution to the site. If you need help, please post in <a href="http://lemmasoft.renai.us/forums/viewtopic.php?f=4&t=6487">this forum thread</a>.</p>
 
 {% endblock %}
