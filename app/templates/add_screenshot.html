@@ -12,52 +12,44 @@
 
 <div>
 
+<div class="row">
+
 {% for screenshot in game.screenshots %}
+<script>
+function deleteConfirm{{ screenshot.id }}() {
+    if (confirm("Delete this screenshot?") == true) {
+        window.location.href = "{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}";
+    }
+}
+</script>
 
-      
-    <div style="float: left; padding-right: 20px;">
-      
-        <div style="padding-bottom: 20px;">
-            {% if screenshot.filename[:11]=="screenshot/" %}
-                <a href="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}" title=" {{ screenshot.caption }}"><img src="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}" width="240" alt="{{ screenshot.caption}} " /></a>
-            {% else %}
-                <a href="{{ url_for('image_normal', filename=screenshot.filename) }}" title=" {{ screenshot.caption }}"><img src="{{ url_for('image_small', filename=screenshot.filename) }}" width="240" alt="{{ screenshot.caption}} " /></a>
-            {% endif %}
-        </div>  
+ <div class="col-md-6">
+      <a href="{{ url_for('image_normal', filename=screenshot.filename) }}" title=" {{ screenshot.caption }}"><img src="{{ url_for('image_small', filename=screenshot.filename) }}" width="240" class="img-thumbnail" alt="{{ screenshot.caption}} " /></a>
+      {% if g.user.role==1 or g.user.role==2 %}
 
-        <div>
-            {% if g.user.role==1 or g.user.role==2 %}
-            
+          <br>
+          {% if not screenshot.approved %}<a class="btn btn-default" href="{{ url_for('approve_screenshot', id=screenshot.id, slug=game.slug) }}">Approve</a>{% endif %}
 
-                {% if not screenshot.approved %}<a class="btn btn-default" href="{{ url_for('approve_screenshot', id=screenshot.id, slug=game.slug) }}">Approve</a>{% endif %}
+          {% if screenshot.filename[:11]=="screenshot/" %}
+              <a href="#" onclick="deleteConfirm{{ screenshot.id }}()" class="btn btn-danger">Delete</a>
+          {% else %}
+              <a href="#" onclick="deleteConfirm{{ screenshot.id }}()" class="btn btn-danger">Delete</a>
+          {% endif %}
 
-            
-                <script>
-                function deleteConfirm{{ screenshot.id }}() {
-                    if (confirm("Delete this screenshot?") == true) {
-                        window.location.href = "{{ url_for('delete_screenshot',slug=game.slug,id=screenshot.id) }}";
-                    }
-                }
-                </script>
-                {% if screenshot.filename[:11]=="screenshot/" %}
-                    <a href="#" onclick="deleteConfirm{{ screenshot.id }}()" class="btn btn-danger">Delete</a>
-                {% else %}
-                    <a href="#" onclick="deleteConfirm{{ screenshot.id }}()" class="btn btn-danger">Delete</a>
-                {% endif %}
-                
-                <form action="{{ url_for('set_thumbnail', slug=game.slug, id=screenshot.id) }}" method="post">
-                    <input onChange="this.form.submit();" type="radio" name="set_thumbnail" value="{{ screenshot.id }}" id="{{ screenshot.id }}" {% if screenshot.is_thumb %}checked="true"{% endif %} /><label for="{{ screenshot.id }}">Set thumbnail</label>
-                </form>
-                
-            {% endif %}
-        </div>
+          <form action="{{ url_for('set_thumbnail', slug=game.slug, id=screenshot.id) }}" method="post">
+              <input onChange="this.form.submit();" type="radio" name="set_thumbnail" value="{{ screenshot.id }}" id="{{ screenshot.id }}" {% if screenshot.is_thumb %}checked="true"{% endif %} /><label for="{{ screenshot.id }}">Set thumbnail</label>
+          </form>
+
+    {% endif %}
     </div>
 
-{% endfor %}	  
+{% endfor %}
+
 </div>
-  
+
+
   <div class="clearfix"></div>
-  
+
 <form method="post" class="form" enctype="multipart/form-data">
   <fieldset>
     <legend>Add a screenshot to {{ game.game_title }}</legend>

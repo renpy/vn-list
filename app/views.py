@@ -698,18 +698,23 @@ def login():
         #password = md5.md5(form.password.data).hexdigest()
 
         user = UserAccount.query.filter(UserAccount.username==form.username.data).first()
-        salt = user.password.split('$')
-        salt = salt[1]
-        #print salt
-        password = 'sha1$'+salt+'$'+hashlib.sha1(salt + form.password.data).hexdigest()
-#        password = hashlib.sha1(form.password.data).hexdigest()
-        user = UserAccount.query.filter(and_(UserAccount.username==form.username.data, UserAccount.password==password)).first()
+
+        if user is not None:
+
+            salt = user.password.split('$')
+            salt = salt[1]
+            #print salt
+            password = 'sha1$'+salt+'$'+hashlib.sha1(salt + form.password.data).hexdigest()
+    #        password = hashlib.sha1(form.password.data).hexdigest()
+            user = UserAccount.query.filter(and_(UserAccount.username==form.username.data, UserAccount.password==password)).first()
+
         if not user:
             error = 'Invalid username or password.'
         else:
             login_user(user, remember = form.remember_me.data)
             flash("Logged in successfully.")
             return redirect(request.args.get("next") or url_for("index"))
+
     return render_template('login.html', form=form, formoid=formoid, help_email=ADMINS[0], error=error, navigation=return_navigation(), providers = app.config['OPENID_PROVIDERS'], site_data=site_data())
 
 @oid.after_login

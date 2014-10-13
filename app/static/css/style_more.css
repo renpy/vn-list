@@ -7,128 +7,7 @@
   width:70%;
 }
 
-/* images */
-.imageRow {
-  *zoom: 1;
-  margin: 20px 0;
-}
-
-.imageRow:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-.imageRow .single {
-  float: left;
-}
-
-.imageRow .single a {
-  float: left;
-  display: block;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 7px;
-  line-height: 1em;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
-  margin-right: 40px;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -ms-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-}
-
-.imageRow .single a img {
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-}
-
-.imageRow .single a:hover {
-  background-color: #4096EE;
-}
-
-.imageRow .set {
-  float: left;
-  background: rgba(255, 255, 255, 0.1);
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -ms-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-}
-
-.imageRow .set:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.imageRow .set .single a {
-  background: none;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  -ms-border-radius: 0;
-  -o-border-radius: 0;
-  border-radius: 0;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  margin-right: 0;
-}
-
-.imageRow .set .single a:hover {
-  background-color: #4096EE;
-  -webkit-box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.2), 0 1px 4px 0 rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.2), 0 1px 4px 0 rgba(0, 0, 0, 0.5);
-  box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.2), 0 1px 4px 0 rgba(0, 0, 0, 0.5);
-}
-
-.imageRow .set .single.first a {
-  -moz-border-radius-topleft: 4px;
-  -webkit-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
-  border-top-left-radius: 4px;
-  -moz-border-radius-bottomleft: 4px;
-  -webkit-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
-.imageRow .set .single.last a {
-  -moz-border-radius-topright: 4px;
-  -webkit-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
-  border-top-right-radius: 4px;
-  -moz-border-radius-bottomright: 4px;
-  -webkit-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
-  border-bottom-right-radius: 4px;
-}
-/* images - end */
-
-
-#userStats { display: block; width: 530px; background-color: #f9f9f9; border: 1px solid #ccc; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding: 12px; 
+#userStats { display: block; width: 530px; background-color: #f9f9f9; border: 1px solid #ccc; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding: 12px;
 font-size: 62.5%; font-family: Helvetica, Arial, sans-serif; line-height: 10%;}
 #userStats .pic { float: left; display: block; margin-right: 10px; }
 #userStats .pic a img { padding: 7px; background: #fff; border: 1px solid #ccc; }
@@ -154,7 +33,7 @@ font-size: 62.5%; font-family: Helvetica, Arial, sans-serif; line-height: 10%;}
     -1px -1px 0 #000,
     1px -1px 0 #000,
     -1px 1px 0 #000,
-    1px 1px 0 #000;  
+    1px 1px 0 #000;
 }
 
 .nav-header {
@@ -166,16 +45,16 @@ font-size: 62.5%; font-family: Helvetica, Arial, sans-serif; line-height: 10%;}
 }
 
 .carousel-caption {
-    background-color: rgba(128, 128, 128, 0.5); 
+    background-color: rgba(128, 128, 128, 0.5);
     left: 0px;
-    top: -30px; 
+    top: -30px;
     width: 680px;
     height: 130px;
     text-align: left;
     padding-left: 20px;
     padding-right: 20px;
 }
-    
+
 /*typeahead*/
 
 .tt-hint {
@@ -235,11 +114,11 @@ body p {
     max-width: 300px;
     max-height: 350px;
     overflow: hidden;
-    
+
     height: 350px;
     width: 300px;
-    
-    
+
+
     text-overflow: ellipsis;
     {# width: auto; #}
 }
@@ -261,4 +140,3 @@ body p {
       padding-right: 5px;
     }
   }
-  

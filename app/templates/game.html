@@ -15,7 +15,7 @@
         }
         </script>
         <a href="#" onclick="deleteGameConfirm{{ game.id }}()" class="btn btn-danger">Delete Game</a>
-    {% endif %}  
+    {% endif %}
     <a class="btn btn-default" href="{{ url_for('add_release',game_slug=game.slug) }}">Add a Release</a>
     <a class="btn btn-default" href="{{ url_for('add_screenshot',game_slug=game.slug) }}">Add Screenshot</a>
 </div>
@@ -54,11 +54,11 @@
 {# {{ game.developer.name }} #}
   <a href="{{ url_for('developer_info', developer=game.developer_id) }}">{{ game.developer.name }}</a>
 {% else %}
-{{ game.maker }} 
+{{ game.maker }}
 {% endif %}
 
 {# <i class="-star"></i> #}
-{% if game.link.url %}&bull; <a href="{{ game.link.url }}" rel="author" data-toggle="tooltip" title="{{ game.link.url }}">{{ game.link.name }}</a>{% endif %} 
+{% if game.link.url %}&bull; <a href="{{ game.link.url }}" rel="author" data-toggle="tooltip" title="{{ game.link.url }}">{{ game.link.name }}</a>{% endif %}
 </h2>
 <p style="margin-left: 20px;">{{ game.description }}</p>
 
@@ -70,13 +70,13 @@
 {{ game.releases[0].release_date.strftime('%b %d, %Y') }} &bull;
 
 {% if game.playtime>0 %}
-	{% if game.playtime>60 %} 
+	{% if game.playtime>60 %}
   	{{ "%.2f"|format(game.playtime/60) }} hours
 	{% else %}
 		{{ game.playtime }} minutes
-	{% endif %}	
+	{% endif %}
 &bull;{% endif %}
-{% if game.playtime == -1 %}{{ game.temp_playtime }} &bull;{% endif %}	
+{% if game.playtime == -1 %}{{ game.temp_playtime }} &bull;{% endif %}
 {% if game.words %}{{ '{:,}'.format(game.words) }} words &bull;{% endif %}
 <span {% if game.age_rating.is_adult %}class="label label-danger"{% endif %}>{% if not game.age_rating.id == 1 %}Ages {% endif %}{{ game.age_rating.name}}</span>
 </p>
@@ -103,7 +103,7 @@
       <b>Engine:</b> {{ release.engine.name }} {{ release.engine_version }}
 
     </p>
-    
+
     <p>{% if game.user_id==g.user.id or g.user.role==1 or g.user.role==2 %}<a class="btn btn-default btn-sm" href="{{ url_for('edit_release',game_slug=game.slug, release_id=release.id) }}">Edit this release</a>{% endif %} {% if not release.approved %}{% if g.user.role==1 or g.user.role==2 %}<a class="btn btn-default" href="{{ url_for('approve_release', id=release.id, slug=game.slug) }}">Approve Release</a>
     {% endif %}{% endif %}
     {% if g.user.role==1 or g.user.role==2 %}
@@ -127,10 +127,10 @@
             {% if g.user.role==1 or g.user.role==2 %}
                 <a href="#" onclick="if (confirm('Delete file {{ file.filename }}?') == true) {window.location.href = '{{ url_for('delete_file',slug=game.slug,id=file.id) }}';}" class="btn btn-danger btn-xs">Delete file</a>
             {% endif %}
-            
+
         </p>
         {% endfor %}
-    </div>        
+    </div>
     {% endif %}
     {% if game.user_id==g.user.id or  g.user.role==1 or g.user.role==2 %}
         <p><a class="btn btn-default btn-sm" href="{{ url_for('upload_file_form', game_slug=game.slug, release_id=release.id) }}">Add a file</a></p>
@@ -141,38 +141,23 @@
 </div>
 
 <div>
-    <a id="screenshots"></a>
-    {% if game.screenshots %}
-        <h3>Screenshots</h3>
-        <div class="imageRow">
-            <div class="set">
-            {% for screenshot in game.screenshots %}	  
-                <div class="single {% if loop.first %}first{% endif %}{% if loop.last %}last{% endif %}">
-                {% if loop.first and game.slug=='doppelganger' %}
-                <a class="fancybox" rel="gallery" href="http://www.youtube.com/watch?v=TxXxDUaN5w0">
-                <div style="position:relative">
-                  <div>
-                    <img src="http://img.youtube.com/vi/TxXxDUaN5w0/hqdefault.jpg" width="320">
-                  </div>
-                  <div style="position:absolute; left:98px; top:54px;">
-                        <img src="/static/play.png">
-                  </div>
-                </div>
-                </a>
-                {% endif %}
+<a id="screenshots"></a>
+{% if game.screenshots %}
+<h3>Screenshots</h3>
 
-                {% if game.screenshot.approved %}
-                    {% if screenshot.filename[:11]=="screenshot/" %}
-                        <a class="fancybox" rel="gallery" href="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}"><img src="http://renai.us/site_media/media/screenshot/medium/{{ screenshot.filename[11:] }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
-                    {% else %}
-                        <a class="fancybox" rel="gallery" href="{{ url_for('image_normal', filename=screenshot.filename) }}"><img src="{{ url_for('image_medium', filename=screenshot.filename) }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
-                    {% endif %}
-                {% endif %}
-                </div>
-            {% endfor %}
-            </div>
-        </div>
+{% for screenshot in game.screenshots %}
+<div class="img-thumbnail" alt="" style="margin-right: 10px; margin-bottom: 10px;">
+{% if game.screenshot.approved %}
+    {% if screenshot.filename[:11]=="screenshot/" %}
+        <a class="fancybox" rel="gallery" href="http://renai.us/site_media/media/screenshot/{{ screenshot.filename[11:] }}"><img src="http://renai.us/site_media/media/screenshot/medium/{{ screenshot.filename[11:] }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
+    {% else %}
+        <a class="fancybox" rel="gallery" href="{{ url_for('image_normal', filename=screenshot.filename) }}"><img src="{{ url_for('image_medium', filename=screenshot.filename) }}" width="320"  alt="{% if  screenshot.caption %}{{ screenshot.caption}}{% else %}{{ game.game_title}} screenshot {{loop.index}}{% endif %}" /></a>
     {% endif %}
+{% endif %}
+</div>
+{% endfor %}
+
+{% endif %}
 </div>
 
 <p class="alert alert-info">You can add new screenshots and new releases just by logging in. To update the game information, post a request <strong><a href="http://lemmasoft.renai.us/forums/viewtopic.php?f=4&t=6487">here.</a></strong></p>
