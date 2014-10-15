@@ -752,13 +752,19 @@ def signup():
         chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
         salt = ''.join(random.choice(chars) for x in range(5))
 
-        password = password = 'sha1$'+salt+'$'+hashlib.sha1(salt + form.password.data).hexdigest()
-#        user = UserAccount(username=form.username.data, password=md5.md5(form.password.data).hexdigest(), email = form.email.data, role = ROLE_USER)
-        user = UserAccount(username=form.username.data, password=password, email = form.email.data, role = ROLE_USER)
-        db.session.add(user)
-        db.session.commit()
-        flash('You have signed up successfully. Please log in.')
-        return redirect(url_for('login'))
+        user = UserAccount.query.filter(UserAccount.username==form.username.data).first()
+
+        if user:
+            error = "That username is already in use. Please log in, or choose a different username."
+        else:
+            password = password = 'sha1$'+salt+'$'+hashlib.sha1(salt + form.password.data).hexdigest()
+    #        user = UserAccount(username=form.username.data, password=md5.md5(form.password.data).hexdigest(), email = form.email.data, role = ROLE_USER)
+            user = UserAccount(username=form.username.data, password=password, email = form.email.data, role = ROLE_USER)
+            db.session.add(user)
+            db.session.commit()
+            flash('You have signed up successfully. Please log in.')
+            return redirect(url_for('login'))
+
     return render_template('signup.html', form=form, error=error, help_email=ADMINS[0], navigation=return_navigation(), site_data=site_data())
 
 @app.route('/account/password_reset/', methods=['GET', 'POST'])
