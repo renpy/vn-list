@@ -282,6 +282,7 @@ def show_entries_special(special=''):
         return render_template('404.html', site_data=site_data(), navigation=return_navigation()), 404
 
 @app.route('/game/<game_slug>.shtml', methods=['GET', 'POST'])
+@app.route('/game/<game_slug>', methods=['GET', 'POST'])
 def game_details(game_slug=''):
     game = return_games(category=None, game_slug=game_slug)
     form = AdminGameApproveForm()
@@ -463,10 +464,10 @@ def add_game():
         if form.playtime.data:
             try:
                 playtime = float(form.playtime.data)
-            except TypeError:
+            except:
                 try:
                     playtime = int(re.search(r'(0|(-?[1-9][0-9]*))', form.playtime.data).group(0))
-                except TypeError: # Catch exception if re.search returns None
+                except: # Catch exception if re.search returns None
                     playtime = 0
             if form.playtime_unit.data == 'hours':
                 playtime = playtime * 60
@@ -772,6 +773,9 @@ def password_reset():
     from emails import password_reset_request
     error = ''
     form = PassResetForm()
+
+
+
     if form.validate_on_submit():
         user = UserAccount.query.filter(UserAccount.email==form.email.data).first()
         if user:
@@ -796,8 +800,11 @@ def new_password():
         return redirect(url_for('index'))
     form = NewPasswordForm()
     if form.validate_on_submit():
+        chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
+        salt = ''.join(random.choice(chars) for x in range(5))
+        password = 'sha1$'+salt+'$'+hashlib.sha1(salt + form.password.data).hexdigest()
         user = UserAccount.query.filter(and_(UserAccount.password_reset_token==token, now()<UserAccount.password_reset_expiration)).first()
-        user.password=md5.md5(form.password.data).hexdigest()
+        user.password=password
         user.password_reset_token=''
         db.session.commit()
         flash('Password has been changed.')
