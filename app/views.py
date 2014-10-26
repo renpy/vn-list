@@ -653,6 +653,7 @@ def resize_image(filename, game_slug):
         outfile = dirs[s] + '/' + outfilename
 
         im = Image.open(infile)
+        im = im.convert('RGB')
         old_width, old_height = im.size
 
         new_width = widths[s]
