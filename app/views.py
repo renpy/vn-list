@@ -806,7 +806,7 @@ def new_password():
         password = 'sha1$'+salt+'$'+hashlib.sha1(salt + form.password.data).hexdigest()
         user = UserAccount.query.filter(and_(UserAccount.password_reset_token==token, now()<UserAccount.password_reset_expiration)).first()
         user.password=password
-        user.password_reset_token=''
+        user.password_reset_token=None
         db.session.commit()
         flash('Password has been changed.')
         return redirect(url_for('login'))

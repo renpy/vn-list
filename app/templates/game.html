@@ -58,7 +58,7 @@
 {% endif %}
 
 {# <i class="-star"></i> #}
-{% if game.link.url %}&bull; <a href="{{ game.link.url }}" rel="author" data-toggle="tooltip" title="{{ game.link.url }}">{{ game.link.name }}</a>{% endif %}
+{% if game.link.url %}&bull; <a href="{{ game.link.url }}" rel="author" data-toggle="tooltip" title="{{ game.link.url }}">{{ game.link.url }}</a>{% endif %}
 </h2>
 <p style="margin-left: 20px;">{{ game.description }}</p>
 
@@ -67,7 +67,7 @@
 #}
 
 <p style="font-size: 130%;">
-{{ game.releases[0].release_date.strftime('%b %d, %Y') }} &bull;
+{% if game.releases %}{{ game.releases[0].release_date.strftime('%b %d, %Y') }}{% endif %} &bull;
 
 {% if game.playtime>0 %}
 	{% if game.playtime>60 %}

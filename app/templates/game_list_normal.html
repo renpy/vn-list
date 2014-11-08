@@ -32,7 +32,7 @@
 <p>{{ game.description }}</p>
 
 <p style="font-size: 130%;">
-{{ game.releases[0].release_date.strftime('%b %d, %Y') }} &bull;
+{% if game.releases %}{{ game.releases[0].release_date.strftime('%b %d, %Y') }}{% endif %} &bull;
 {% if game.playtime > 0%}
 	{% if game.playtime>60 %}
   	{{ "%.2f"|format(game.playtime/60) }} hours
