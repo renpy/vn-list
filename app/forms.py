@@ -33,29 +33,29 @@ class SignupForm(Form):
     username = StringField('username', validators = [Required()])
     password = PasswordField('password', validators = [Required()])
     email = StringField('email')
-    
+
 class PassResetForm(Form):
     email = StringField('email', validators = [Required()])
-    
+
 class NewPasswordForm(Form):
     password = PasswordField('password', validators = [Required()])
 
 class AdminGameApproveForm(Form):
     approved = RadioField('Approved on', choices=[("0", "Rejected"), ("1", "Ren'Ai Archive"), ("2", "Ren'Py Games List"), ("3", "Both"), ])
-    
+
 class UploadForm(Form):
     uploaded_file = FileField(u'File')
     description = StringField(u'Description')
     edit = HiddenField(u'Edit')
-    
+
 #class UploadFormEdit(UploadForm):
 #    edit = HiddenField(u'Edit')
-    
+
 class AccountForm(Form):
     username = StringField(u'Username')
     email = StringField(u'Email')
     submit_basic = SubmitField(u'Save Settings', validators = [Required()])
-    
+
 class ChangePasswordForm(Form):
     password = PasswordField('Current Password', validators = [Required()])
     newpassword = PasswordField('New Password', validators = [Required()])
@@ -64,7 +64,7 @@ class ChangePasswordForm(Form):
 def valid_short_name(form, field):
     word = field.data
     if not re.match(r'^[a-z0-9/-]+$', word):
-        raise ValidationError('Lower-case letters, numbers and dashes only.')    
+        raise ValidationError('Lower-case letters, numbers and dashes only.')
     if not (Game.query.filter(Game.slug==word).first() == None):
         raise ValidationError('A game with short name "'+field.data+'" already exists.')
 
@@ -91,13 +91,13 @@ class ReleaseFormBase(Form):
     platforms = MultiCheckboxField(u'Platforms', validators = [Required(u'Select at least one platform.')], choices=[(platform.id, platform.platform_name) for platform in Platform.query], coerce=int, description=u'Select the platforms this release is supported on.', default=[1,2,3])
 
     engine_version = StringField(u'Engine Version', description=u'The version of the engine that was used to create this game. Leave blank if unknown.')
-    
+
 class ReleaseForm(ReleaseFormBase):
     release_description = TextAreaField(u'Release Description', default="", description=u'An optional description of this release.')
 
     #ReleaseForm
 class GameFormBase(Form):
-    homepage_link_url = StringField(u'Home Page', validators = [Optional(), URL(require_tld=True, message="Invalid URL.")], description=u"A link to the game's home page. This should not be games.renpy.org - you need a website where people can get the game from.", default="")
+    homepage_link_url = StringField(u'Home Page', validators = [Required(), URL(require_tld=True, message="Invalid URL.")], description=u"A link to the game's home page. This should not be games.renpy.org - you need a website where people can get the game from.", default="")
     creator = StringField(u'Developer', validators = [Required()], description=u"The name of the person or group/studio that made this game.", default="")
     creator_type = RadioField(u'Creator Type', validators = [Required()], choices=[('person', 'Person'), ('group', 'Group')], default="group")
     description_ = TextAreaField(u'Description', validators = [Required()], description=u"A description of this game.")
@@ -118,12 +118,12 @@ class GameFormBase(Form):
     playtime = StringField(u'Playtime', validators = [playtime_or_words], description=u"Leave this blank if the number of words in the game is known.", default="")
     playtime_unit = RadioField(u'playtime_unit', validators = [Required()], choices=[('minutes', 'Minutes'), ('hours', 'Hours')], default='minutes', description='')
 
-class GameForm(GameFormBase, ReleaseForm):    
+class GameForm(GameFormBase, ReleaseForm):
     game_title = StringField(u'Title', validators = [Required(), valid_game_name], description=u"The game's title.", default="")
     slug = StringField(u'Short Title', validators = [Required(), valid_short_name],
         description=u'A short name for the game, used in URLs. This should be made up of lower-case letters, numbers and dashes (-) only.', default="")
     release_description = HiddenField(u'Release Description', default="", description=u'An optional description of this release.')
     listed_on = BooleanField(u'List on renai.us', description=u"Check this to list this game on renai.us. To be listed, the game must have been created in English, must be a visual novel or dating sim, and must be free for us to re-distribute.", default=False)
-    
-class GameFormEdit(GameFormBase):    
+
+class GameFormEdit(GameFormBase):
     game_title = StringField(u'Title', validators = [Required()], description=u"The game's title.", default="")
