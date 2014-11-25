@@ -30,25 +30,25 @@ files = files.filter(models.File.approved==False)
 files = files.distinct(models.Game.id)
 files = files.all()
 
-print ("Games: " + str(len(games)))
-for game in games:
-    print (game.game_title)
-    
-print ("--------------")
-print ("Releases: " + str(len(releases)))
-for release in releases:
-    print (release[1].game_title)
+# print ("Games: " + str(len(games)))
+# for game in games:
+#     print (game.game_title)
+#
+# print ("--------------")
+# print ("Releases: " + str(len(releases)))
+# for release in releases:
+#     print (release[1].game_title)
+#
+# print ("--------------")
+# print ("Files: " + str(len(files)))
+# for file in files:
+#     print (file[1].game_title)
+#
+# print ("--------------")
+# print ("Screenshots: " + str(len(screenshots)))
+# for screenshot in screenshots:
+#     print (screenshot[1].game_title)
 
-print ("--------------")
-print ("Files: " + str(len(files)))
-for file in files:
-    print (file[1].game_title)
-    
-print ("--------------")
-print ("Screenshots: " + str(len(screenshots)))
-for screenshot in screenshots:
-    print (screenshot[1].game_title)
-    
 msg = Message('Dirty Pages', sender = ADMINS[0], recipients = ADMINS)
 msg.body = ""
 msg.html = ""
@@ -66,7 +66,7 @@ for game in games:
     url = DOMAIN_URL + "game/" + game.slug
     msg.body += title + " " + url + "\n"
     msg.html += '<p><a href="' + url + '">' + title + "</a></p>"
-    
+
 body = "---------------\n"
 msg.body += body + "\n";
 msg.html += "<hr/>"
@@ -95,11 +95,11 @@ for file in files:
     msg.body += title + " " + url + "\n"
     msg.html += '<p><a href="' + url + '">' + title + "</a></p>"
 
-    
+
 body = "---------------\n"
 msg.body += body + "\n";
 msg.html += "<hr/>"
-    
+
 body = "Screenshots:\n"
 msg.body += body + "\n";
 msg.html += "<p>" + body + "</p>"
