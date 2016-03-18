@@ -965,10 +965,13 @@ def account_settings():
 
 @app.route('/developer/<developer>')
 def developer_info(developer):
-    games = Game.query.filter(Game.developer_id==developer).all()
-    num_of_games = len(games)
-    developer = Developer.query.filter(Developer.id==developer).one()
-    return render_template('developer.html', num_of_games=num_of_games, developer=developer, games=games, navigation=return_navigation(), site_data=site_data())
+    try:
+        games = Game.query.filter(Game.developer_id==developer).all()
+        num_of_games = len(games)
+        developer = Developer.query.filter(Developer.id==developer).one()
+        return render_template('developer.html', num_of_games=num_of_games, developer=developer, games=games, navigation=return_navigation(), site_data=site_data())
+    except:
+        abort(404)
 
 @app.route('/test/domain/<domain_id>')
 def change_domain_testing(domain_id):
